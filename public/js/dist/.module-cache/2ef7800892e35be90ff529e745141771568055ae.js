@@ -1,5 +1,5 @@
 'use strict';
 React.render(
-    <li>Hello, world!</li>,
+    React.createElement("li", null, "Hello, world!"),
     document.getElementById('messages')
 );

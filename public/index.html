@@ -1,68 +1,19 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-    <title>Socket.IO chat</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font: 13px Helvetica, Arial; }
-        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-        #messages { list-style-type: none; margin: 0; padding: 0; margin-bottom:40px; }
-        #messages li { padding: 5px 10px; }
-        #messages li:nth-child(odd) { background: #eee; }
-
-        #messages li.mine{
-            background:#ff9999;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
+    <title>ReactJS Socket.io Chat Application</title>
 </head>
 <body>
-<ul id="messages"></ul>
-<form action="">
-    <input id="m" autocomplete="off" /><button>Send</button>
-</form>
-<script src="/socket.io/socket.io.js"></script>
-<script src="jquery/dist/jquery.js"></script>
-<script src="react/dist/react.js"></script>
-<script src="js/dist/app.js"></script>
-<script>
-    var socket = io();
-    var color = rainbow(20,Math.floor(Math.random() * 20) + 1);
-    $('form').submit(function(){
-        socket.emit('message:send', {msg:$('#m').val(),color:color});
-        var html = '<li style="background-color:' + color + '">';
-        $('#messages').append($(html).text($('#m').val()));
-        $('#m').val('');
-        window.scrollTo(0,document.body.scrollHeight);
-        return false;
-    });
-    socket.on('message:deliver', function(deliverable){
-        var html = '<li style="background-color:' + deliverable.color + '">';
-        $('#messages').append($(html).text(deliverable.msg));
-        window.scrollTo(0,document.body.scrollHeight);
-    });
-
-    function rainbow(numOfSteps, step) {
-        // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
-        // Adam Cole, 2011-Sept-14
-        // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
-        var r, g, b;
-        var h = step / numOfSteps;
-        var i = ~~(h * 6);
-        var f = h * 6 - i;
-        var q = 1 - f;
-        switch(i % 6){
-            case 0: r = 1; g = f; b = 0; break;
-            case 1: r = q; g = 1; b = 0; break;
-            case 2: r = 0; g = 1; b = f; break;
-            case 3: r = 0; g = q; b = 1; break;
-            case 4: r = f; g = 0; b = 1; break;
-            case 5: r = 1; g = 0; b = q; break;
-        }
-        var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
-        return (c);
-    }
-</script>
+<div id="app" class="container"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="react/dist/react.js"></script>
+    <script src="underscore/underscore.js"></script>
+    <script src="js/dist/app.js"></script>
 </body>
 </html>
