@@ -5,20 +5,19 @@ var statuses = [
     "active","inactive","playing"
 ];
 
-var UsersList = React.createClass({
+var UserList = React.createClass({
     render() {
-        // TODO: ICON DOESNT WORK
         return (
-            <div className='users col-sm-4'>
-                <h3> Online Users </h3>
+            <div className='users'>
+                <h3><i className="fa fa-user"></i> Fellow chatturs</h3>
                 <ul>
                     {
                         this.props.users.map((user, i) => {
                             var statusClass = "fa fa-gamepad status-" + user.status;
                             return (
                                 <li key={i} className="user">
-                                    <i className={statusClass}></i>
-                                    {user.name} ({user.status})
+                                    <i className={statusClass} alt={user.status}></i>
+                                    {user.name}
                                 </li>
                             );
                         })
@@ -34,8 +33,9 @@ var Message = React.createClass({
     render() {
         return (
             <div className="message">
-                <strong>[{this.props.timestamp}] {this.props.user.name}: </strong>
-                <span>{this.props.text}</span>
+                <span className="message__timestamp">[{this.props.timestamp}] </span>
+                <span className="message__username">{this.props.user.name}: </span>
+                <span className="message__text">{this.props.text}</span>
             </div>
         );
     }
@@ -44,7 +44,7 @@ var Message = React.createClass({
 var MessageList = React.createClass({
     render() {
         return (
-            <div className='messages col-sm-8'>
+            <div className='messages'>
                 <div className='messages-content'>
                 {
                     this.props.messages.map((message, i) => {
@@ -86,15 +86,17 @@ var MessageForm = React.createClass({
 
     render() {
         return(
-            <div className='message_form row'>
+            <div className='messageform row'>
                 <div className="col-sm-12">
                     <form onSubmit={this.handleSubmit} className="form">
                         <textarea
                             onChange={this.changeHandler}
                             value={this.state.text}
-                          className="form-control"
+                          className="form-control messageform__text"
                             rows="7"></textarea>
-                        <button type="submit" className="btn btn-success col-sm-12">Send message</button>
+                        <button type="submit"
+                                className="btn btn-success col-sm-12"
+                                disabled={this.state.text.length == 0}>Send message</button>
                     </form>
                 </div>
             </div>
@@ -114,8 +116,10 @@ var ChangeNameForm = React.createClass({
     handleSubmit(e) {
         e.preventDefault();
         var newName = this.state.newName;
-        this.props.onChangeName(newName);
-        this.setState({ newName: '' });
+        if(newName.length > 0){
+            this.props.onChangeName(newName);
+            this.setState({ newName: '' });
+        }
     },
 
     render() {
@@ -128,8 +132,11 @@ var ChangeNameForm = React.createClass({
                             value={this.state.newName}
                             className="form-control"
                             placeholder="Choose a new name"
+
                             />
-                        <button type="submit" className="btn btn-success col-sm-12">Save name <span className="small">(or pres ENTER)</span></button>
+                        <button type="submit"
+                                className="btn btn-success col-sm-12"
+                                disabled={this.state.newName.length == 0}>Save name <span className="small">(ENTER)</span></button>
                     </form>
                 </div>
             </div>
@@ -166,12 +173,12 @@ var ChangeStatusForm = React.createClass({
                             {
                                 statuses.map((status, i) => {
                                     return (
-                                        <option value={status}>{status}</option>
+                                        <option key={i} value={status}>{status}</option>
                                     );
                                 })
                             }
                         </select>
-                        <button type="submit" className="btn btn-success col-sm-12">Save</button>
+                        <button type="submit" className="btn btn-success col-sm-12">Update status</button>
                     </form>
                 </div>
             </div>
@@ -385,23 +392,27 @@ var ChatApp = React.createClass({
         return (
             <div className="container">
                 <div className="row content">
-                    <MessageList
-                        messages={this.state.messages}
+                    <div className="col-sm-9 chattur__messagelist">
+                        <MessageList
+                            messages={this.state.messages}
                         />
-                    <UsersList
-                        users={this.state.users}
+                    </div>
+                    <div className="col-sm-3 chattur__userlist">
+                        <UserList
+                            users={this.state.users}
                         />
+                    </div>
                 </div>
                 <div className="row fixed-bottom">
-                    <div className="col-sm-8">
-                        <h3>New message</h3>
+                    <div className="col-sm-9 chattur__message">
+                        <h3><i className="fa fa-envelope"></i> New message</h3>
                     <MessageForm
                         onMessageSubmit={this.handleMessageSubmit}
                         user={this.state.user}
                         />
                     </div>
-                    <div className="col-sm-4">
-                        <h3>Settings <i class="fa fa-cog"></i></h3>
+                    <div className="col-sm-3 chattur__settings">
+                        <h3><i className="fa fa-cog"></i> Settings</h3>
                         <ChangeNameForm
                         onChangeName={this.handleChangeName}
                         user={this.state.user}

@@ -4,18 +4,18 @@ var socket = io.connect();
 
 var statuses = ["active", "inactive", "playing"];
 
-var UsersList = React.createClass({
-    displayName: "UsersList",
+var UserList = React.createClass({
+    displayName: "UserList",
 
     render: function render() {
-        // TODO: ICON DOESNT WORK
         return React.createElement(
             "div",
-            { className: "users col-sm-4" },
+            { className: "users" },
             React.createElement(
                 "h3",
                 null,
-                " Online Users "
+                React.createElement("i", { className: "fa fa-user" }),
+                " Fellow chatturs"
             ),
             React.createElement(
                 "ul",
@@ -25,11 +25,8 @@ var UsersList = React.createClass({
                     return React.createElement(
                         "li",
                         { key: i, className: "user" },
-                        React.createElement("i", { className: statusClass }),
-                        user.name,
-                        " (",
-                        user.status,
-                        ")"
+                        React.createElement("i", { className: statusClass, alt: user.status }),
+                        user.name
                     );
                 })
             )
@@ -45,17 +42,21 @@ var Message = React.createClass({
             "div",
             { className: "message" },
             React.createElement(
-                "strong",
-                null,
+                "span",
+                { className: "message__timestamp" },
                 "[",
                 this.props.timestamp,
-                "] ",
+                "] "
+            ),
+            React.createElement(
+                "span",
+                { className: "message__username" },
                 this.props.user.name,
                 ": "
             ),
             React.createElement(
                 "span",
-                null,
+                { className: "message__text" },
                 this.props.text
             )
         );
@@ -68,7 +69,7 @@ var MessageList = React.createClass({
     render: function render() {
         return React.createElement(
             "div",
-            { className: "messages col-sm-8" },
+            { className: "messages" },
             React.createElement(
                 "div",
                 { className: "messages-content" },
@@ -109,7 +110,7 @@ var MessageForm = React.createClass({
     render: function render() {
         return React.createElement(
             "div",
-            { className: "message_form row" },
+            { className: "messageform row" },
             React.createElement(
                 "div",
                 { className: "col-sm-12" },
@@ -119,11 +120,13 @@ var MessageForm = React.createClass({
                     React.createElement("textarea", {
                         onChange: this.changeHandler,
                         value: this.state.text,
-                        className: "form-control",
+                        className: "form-control messageform__text",
                         rows: "7" }),
                     React.createElement(
                         "button",
-                        { type: "submit", className: "btn btn-success col-sm-12" },
+                        { type: "submit",
+                            className: "btn btn-success col-sm-12",
+                            disabled: this.state.text.length == 0 },
                         "Send message"
                     )
                 )
@@ -146,8 +149,10 @@ var ChangeNameForm = React.createClass({
     handleSubmit: function handleSubmit(e) {
         e.preventDefault();
         var newName = this.state.newName;
-        this.props.onChangeName(newName);
-        this.setState({ newName: '' });
+        if (newName.length > 0) {
+            this.props.onChangeName(newName);
+            this.setState({ newName: '' });
+        }
     },
 
     render: function render() {
@@ -165,15 +170,18 @@ var ChangeNameForm = React.createClass({
                         value: this.state.newName,
                         className: "form-control",
                         placeholder: "Choose a new name"
+
                     }),
                     React.createElement(
                         "button",
-                        { type: "submit", className: "btn btn-success col-sm-12" },
+                        { type: "submit",
+                            className: "btn btn-success col-sm-12",
+                            disabled: this.state.newName.length == 0 },
                         "Save name ",
                         React.createElement(
                             "span",
                             { className: "small" },
-                            "(or pres ENTER)"
+                            "(ENTER)"
                         )
                     )
                 )
@@ -218,7 +226,7 @@ var ChangeStatusForm = React.createClass({
                         statuses.map(function (status, i) {
                             return React.createElement(
                                 "option",
-                                { value: status },
+                                { key: i, value: status },
                                 status
                             );
                         })
@@ -226,7 +234,7 @@ var ChangeStatusForm = React.createClass({
                     React.createElement(
                         "button",
                         { type: "submit", className: "btn btn-success col-sm-12" },
-                        "Save"
+                        "Update status"
                     )
                 )
             )
@@ -445,23 +453,32 @@ var ChatApp = React.createClass({
             React.createElement(
                 "div",
                 { className: "row content" },
-                React.createElement(MessageList, {
-                    messages: this.state.messages
-                }),
-                React.createElement(UsersList, {
-                    users: this.state.users
-                })
+                React.createElement(
+                    "div",
+                    { className: "col-sm-9 chattur__messagelist" },
+                    React.createElement(MessageList, {
+                        messages: this.state.messages
+                    })
+                ),
+                React.createElement(
+                    "div",
+                    { className: "col-sm-3 chattur__userlist" },
+                    React.createElement(UserList, {
+                        users: this.state.users
+                    })
+                )
             ),
             React.createElement(
                 "div",
                 { className: "row fixed-bottom" },
                 React.createElement(
                     "div",
-                    { className: "col-sm-8" },
+                    { className: "col-sm-9 chattur__message" },
                     React.createElement(
                         "h3",
                         null,
-                        "New message"
+                        React.createElement("i", { className: "fa fa-envelope" }),
+                        " New message"
                     ),
                     React.createElement(MessageForm, {
                         onMessageSubmit: this.handleMessageSubmit,
@@ -470,12 +487,12 @@ var ChatApp = React.createClass({
                 ),
                 React.createElement(
                     "div",
-                    { className: "col-sm-4" },
+                    { className: "col-sm-3 chattur__settings" },
                     React.createElement(
                         "h3",
                         null,
-                        "Settings ",
-                        React.createElement("i", { "class": "fa fa-cog" })
+                        React.createElement("i", { className: "fa fa-cog" }),
+                        " Settings"
                     ),
                     React.createElement(ChangeNameForm, {
                         onChangeName: this.handleChangeName,
