@@ -81,21 +81,30 @@ var userList = (function(){
         users = result;
     }
 
-    function updateUsername(oldName, newName){
+    function updateUsername(user, newName){
         // check if new name exists
-        console.log("updateUsername: " + oldName.name + " to " + newName);
         if(userNameExists(newName)){
             console.log("usernameDoesNotExist");
             for(var i = 0; i < users.length; i++){
-                var tempUser = users[i];
-                console.log(tempUser);
-                if(tempUser.name == oldName.name){
-                    tempUser.name = newName;
+                if(users[i].name == user.name){
+                    users[i].name = newName;
                     break;
                 }
             }
         }
-        console.dir(users);
+    }
+
+    function updateStatus(user, status){
+        // check if new name exists
+        console.log("update status!");
+        for(var i = 0; i < users.length; i++){
+            var tempUser = users[i];
+            console.log(tempUser);
+            if(users[i].name == user.name){
+                users[i].status = status;
+                break;
+            }
+        }
 
     }
 
@@ -103,7 +112,6 @@ var userList = (function(){
         console.log("checking message: " + data.text);
         var bot = null;
         for(var i = 0; i < bots.length; i++){
-            console.log(bots[i].name);
             if(bots[i].name.toLowerCase() == data.text.toLowerCase()){
                 bot = bots[i];
             }
@@ -119,6 +127,7 @@ var userList = (function(){
         removeUser:removeUser,
         claimName:userNameExists,
         updateUsername:updateUsername,
+        updateStatus:updateStatus,
         checkMessageWithBots:checkMessageWithBots
     };
 })();
@@ -177,6 +186,20 @@ module.exports = function (socket) {
         } else {
             fn(false);
         }
+    });
+
+    // validate a user's status change, and broadcast it on success
+    socket.on('change:status', function (data, fn) {
+        var status = data.status;
+        userList.updateStatus(user, data.status);
+        name = data.name;
+
+        socket.broadcast.emit('change:status', {
+            user:user,
+            status:status
+        });
+
+        fn(true);
     });
 
     // clean up when a user leaves, and broadcast it to other users

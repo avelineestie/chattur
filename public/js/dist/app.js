@@ -2,32 +2,34 @@
 'use strict';
 var socket = io.connect();
 
+var statuses = ["active", "inactive", "playing"];
+
 var UsersList = React.createClass({
-    displayName: 'UsersList',
+    displayName: "UsersList",
 
     render: function render() {
         // TODO: ICON DOESNT WORK
         return React.createElement(
-            'div',
-            { className: 'users col-sm-4' },
+            "div",
+            { className: "users col-sm-4" },
             React.createElement(
-                'h3',
+                "h3",
                 null,
-                ' Online Users '
+                " Online Users "
             ),
             React.createElement(
-                'ul',
+                "ul",
                 null,
                 this.props.users.map(function (user, i) {
                     var statusClass = "fa fa-gamepad status-" + user.status;
                     return React.createElement(
-                        'li',
-                        { key: i, className: 'user' },
-                        React.createElement('i', { className: statusClass }),
+                        "li",
+                        { key: i, className: "user" },
+                        React.createElement("i", { className: statusClass }),
                         user.name,
-                        ' (',
+                        " (",
                         user.status,
-                        ')'
+                        ")"
                     );
                 })
             )
@@ -36,23 +38,23 @@ var UsersList = React.createClass({
 });
 
 var Message = React.createClass({
-    displayName: 'Message',
+    displayName: "Message",
 
     render: function render() {
         return React.createElement(
-            'div',
-            { className: 'message' },
+            "div",
+            { className: "message" },
             React.createElement(
-                'strong',
+                "strong",
                 null,
-                '[',
+                "[",
                 this.props.timestamp,
-                '] ',
+                "] ",
                 this.props.user.name,
-                ': '
+                ": "
             ),
             React.createElement(
-                'span',
+                "span",
                 null,
                 this.props.text
             )
@@ -61,15 +63,15 @@ var Message = React.createClass({
 });
 
 var MessageList = React.createClass({
-    displayName: 'MessageList',
+    displayName: "MessageList",
 
     render: function render() {
         return React.createElement(
-            'div',
-            { className: 'messages col-sm-8' },
+            "div",
+            { className: "messages col-sm-8" },
             React.createElement(
-                'div',
-                { className: 'messages-content' },
+                "div",
+                { className: "messages-content" },
                 this.props.messages.map(function (message, i) {
                     return React.createElement(Message, {
                         key: i,
@@ -84,7 +86,7 @@ var MessageList = React.createClass({
 });
 
 var MessageForm = React.createClass({
-    displayName: 'MessageForm',
+    displayName: "MessageForm",
 
     getInitialState: function getInitialState() {
         return { text: '' };
@@ -106,20 +108,20 @@ var MessageForm = React.createClass({
 
     render: function render() {
         return React.createElement(
-            'div',
-            { className: 'message_form col-sm-6' },
+            "div",
+            { className: "message_form col-sm-6" },
             React.createElement(
-                'h3',
+                "h3",
                 null,
-                'Write New Message'
+                "Write New Message"
             ),
             React.createElement(
-                'form',
-                { onSubmit: this.handleSubmit, className: 'form' },
-                React.createElement('input', {
+                "form",
+                { onSubmit: this.handleSubmit, className: "form" },
+                React.createElement("input", {
                     onChange: this.changeHandler,
                     value: this.state.text,
-                    className: 'form-control'
+                    className: "form-control"
                 })
             )
         );
@@ -127,14 +129,14 @@ var MessageForm = React.createClass({
 });
 
 var ChangeNameForm = React.createClass({
-    displayName: 'ChangeNameForm',
+    displayName: "ChangeNameForm",
 
     getInitialState: function getInitialState() {
-        return { newName: '' };
+        return { status: '' };
     },
 
     onKey: function onKey(e) {
-        this.setState({ newName: e.target.value });
+        this.setState({ status: e.target.value });
     },
 
     handleSubmit: function handleSubmit(e) {
@@ -146,31 +148,88 @@ var ChangeNameForm = React.createClass({
 
     render: function render() {
         return React.createElement(
-            'div',
-            { className: 'change_name_form col-sm-6' },
+            "div",
+            { className: "change_name_form col-sm-6" },
             React.createElement(
-                'h3',
+                "h3",
                 null,
-                ' Change Name '
+                " Change Name "
             ),
             React.createElement(
-                'form',
-                { onSubmit: this.handleSubmit, className: 'form' },
-                React.createElement('input', {
+                "form",
+                { onSubmit: this.handleSubmit, className: "form" },
+                React.createElement("input", {
                     onChange: this.onKey,
                     value: this.state.newName,
-                    className: 'form-control'
+                    className: "form-control"
                 })
             )
         );
     }
 });
 
-var ChatApp = React.createClass({
-    displayName: 'ChatApp',
+var ChangeStatusForm = React.createClass({
+    displayName: "ChangeStatusForm",
 
     getInitialState: function getInitialState() {
-        return { users: [], messages: [], text: '' };
+        return { status: '',
+            statuses: ["active", "inactive", "playing"] };
+    },
+
+    storeOption: function storeOption(e) {
+        this.setState({ status: e.target.value });
+    },
+
+    handleSubmit: function handleSubmit(e) {
+        e.preventDefault();
+        var status = this.state.status;
+        this.props.onChangeStatus(status);
+        this.setState({ status: status });
+    },
+
+    render: function render() {
+        // something wrong with the props?
+        return React.createElement(
+            "div",
+            { className: "change_status_form col-sm-6" },
+            React.createElement(
+                "h3",
+                null,
+                " Change Status "
+            ),
+            React.createElement(
+                "form",
+                { onSubmit: this.handleSubmit, className: "form" },
+                React.createElement(
+                    "select",
+                    { className: "form-control", onChange: this.storeOption },
+                    statuses.map(function (status, i) {
+                        return React.createElement(
+                            "option",
+                            { value: status },
+                            status
+                        );
+                    })
+                ),
+                React.createElement(
+                    "button",
+                    { type: "submit" },
+                    "Save"
+                )
+            )
+        );
+    }
+});
+
+var ChatApp = React.createClass({
+    displayName: "ChatApp",
+
+    getInitialState: function getInitialState() {
+        return { users: [],
+            messages: [],
+            text: '',
+            statuses: ["active", "inactive", "playing"]
+        };
     },
 
     componentDidMount: function componentDidMount() {
@@ -179,6 +238,7 @@ var ChatApp = React.createClass({
         socket.on('user:join', this._userJoined);
         socket.on('user:left', this._userLeft);
         socket.on('change:name', this._userChangedName);
+        socket.on('change:status', this._userChangedStatus);
     },
 
     _initialize: function _initialize(data) {
@@ -258,6 +318,30 @@ var ChatApp = React.createClass({
         this.moveUI();
     },
 
+    _userChangedStatus: function _userChangedStatus(data) {
+        console.log("User changed status!");
+        console.log(data);
+        var oldStatus = user.status;
+        var user = data.user;
+        var status = data.status;
+        var users = this.state.users;
+        var messages = this.state.messages;
+        for (var i = 0; i < users.length; i++) {
+            console.log("checking username " + users[i]);
+            if (users[i].name == user.name) {
+                users[i].status = status;
+                break;
+            }
+        }
+        messages.push({
+            user: { name: 'STATUS' },
+            text: 'Someone changed their status from ' + oldStatus + ' to ' + status,
+            timestamp: this.getTimestamp()
+        });
+        this.setState({ users: users, messages: messages });
+        this.moveUI();
+    },
+
     handleMessageSubmit: function handleMessageSubmit(message) {
         message.timestamp = this.getTimestamp();
         console.dir(message);
@@ -291,6 +375,34 @@ var ChatApp = React.createClass({
 
         this.moveUI();
     },
+
+    handleChangeStatus: function handleChangeStatus(status) {
+        var _this2 = this;
+
+        console.log("User changed status!");
+        console.log(status);
+        var user = this.state.user;
+        socket.emit('change:status', { status: status }, function (result) {
+            console.log("User status withing scope");
+            console.log(result);
+            if (!result) {
+                return alert('There was an error changing your status');
+            }
+            var users = _this2.state.users;
+            for (var i = 0; i < users.length; i++) {
+                console.log("checking username " + users[i]);
+                if (users[i].name == user.name) {
+                    users[i].status = status;
+                    user.status = status;
+                    break;
+                }
+            }
+            _this2.setState({ users: users, user: user });
+            _this2.moveUI();
+        });
+
+        this.moveUI();
+    },
     moveUI: function moveUI() {
         console.log("move ui");
         $('html, body').animate({
@@ -311,30 +423,34 @@ var ChatApp = React.createClass({
 
     render: function render() {
         return React.createElement(
-            'div',
-            { className: 'container' },
+            "div",
+            { className: "container" },
             React.createElement(
-                'div',
-                { className: 'row content' },
+                "div",
+                { className: "row content" },
                 React.createElement(MessageList, {
                     messages: this.state.messages
                 }),
                 React.createElement(UsersList, {
                     users: this.state.users,
-                    className: 'col-sm-4'
+                    className: "col-sm-4"
                 })
             ),
             React.createElement(
-                'div',
-                { className: 'row fixed-bottom' },
+                "div",
+                { className: "row fixed-bottom" },
                 React.createElement(MessageForm, {
                     onMessageSubmit: this.handleMessageSubmit,
                     user: this.state.user,
-                    className: 'col-sm-6'
+                    className: "col-sm-6"
                 }),
                 React.createElement(ChangeNameForm, {
                     onChangeName: this.handleChangeName,
-                    className: 'col-sm-8'
+                    className: "col-sm-3"
+                }),
+                React.createElement(ChangeStatusForm, {
+                    onChangeStatus: this.handleChangeStatus,
+                    className: "col-sm-3"
                 })
             )
         );

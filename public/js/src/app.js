@@ -1,6 +1,10 @@
 'use strict';
 var socket = io.connect();
 
+var statuses = [
+    "active","inactive","playing"
+];
+
 var UsersList = React.createClass({
     render() {
         // TODO: ICON DOESNT WORK
@@ -98,11 +102,11 @@ var MessageForm = React.createClass({
 
 var ChangeNameForm = React.createClass({
     getInitialState() {
-        return {newName: ''};
+        return {status: ''};
     },
 
     onKey(e) {
-        this.setState({ newName : e.target.value });
+        this.setState({ status : e.target.value });
     },
 
     handleSubmit(e) {
@@ -128,10 +132,58 @@ var ChangeNameForm = React.createClass({
     }
 });
 
+var ChangeStatusForm = React.createClass({
+    getInitialState() {
+        return {status: '',
+        statuses: [
+            "active","inactive","playing"
+        ]};
+    },
+
+    storeOption(e) {
+        this.setState({ status : e.target.value });
+    },
+
+    handleSubmit(e) {
+        e.preventDefault();
+        var status = this.state.status;
+        this.props.onChangeStatus(status);
+        this.setState({ status: status });
+    },
+
+    render() {
+        // something wrong with the props?
+        return(
+            <div className='change_status_form col-sm-6'>
+                <h3> Change Status </h3>
+                <form onSubmit={this.handleSubmit} className="form">
+                    <select className="form-control" onChange={this.storeOption} >
+                        {
+                            statuses.map((status, i) => {
+                                return (
+                                    <option value={status}>{status}</option>
+                                );
+                            })
+                        }
+                    </select>
+                    <button type="submit">Save</button>
+                </form>
+
+            </div>
+        );
+    }
+});
+
 var ChatApp = React.createClass({
 
     getInitialState() {
-        return {users: [], messages:[], text: ''};
+        return {users: [],
+            messages:[],
+            text: '',
+            statuses:[
+                "active","inactive","playing"
+            ]
+        };
     },
 
     componentDidMount() {
@@ -140,6 +192,7 @@ var ChatApp = React.createClass({
         socket.on('user:join', this._userJoined);
         socket.on('user:left', this._userLeft);
         socket.on('change:name', this._userChangedName);
+        socket.on('change:status', this._userChangedStatus);
     },
 
     _initialize(data) {
@@ -219,6 +272,30 @@ var ChatApp = React.createClass({
         this.moveUI();
     },
 
+    _userChangedStatus(data) {
+        console.log("User changed status!");
+        console.log(data);
+        var oldStatus = user.status;
+        var user = data.user;
+        var status = data.status;
+        var users = this.state.users;
+        var messages = this.state.messages;
+        for(var i = 0; i < users.length; i++){
+            console.log("checking username " + users[i]);
+            if(users[i].name == user.name){
+                users[i].status = status;
+                break;
+            }
+        }
+        messages.push({
+            user: {name:'STATUS'},
+            text : 'Someone changed their status from ' + oldStatus + ' to '+ status,
+            timestamp: this.getTimestamp()
+        });
+        this.setState({users, messages});
+        this.moveUI();
+    },
+
     handleMessageSubmit(message) {
         message.timestamp = this.getTimestamp();
         console.dir(message);
@@ -251,6 +328,32 @@ var ChatApp = React.createClass({
 
         this.moveUI();
     },
+
+    handleChangeStatus(status) {
+        console.log("User changed status!");
+        console.log(status);
+    var user = this.state.user;
+    socket.emit('change:status', { status : status}, (result) => {
+        console.log("User status withing scope");
+        console.log(result);
+        if(!result) {
+            return alert('There was an error changing your status');
+        }
+        var users = this.state.users;
+        for(var i = 0; i < users.length; i++){
+            console.log("checking username " + users[i]);
+            if(users[i].name == user.name){
+                users[i].status = status;
+                user.status = status;
+                break;
+            }
+        }
+        this.setState({users, user: user});
+        this.moveUI();
+    });
+
+    this.moveUI();
+},
     moveUI(){
         console.log("move ui");
         $('html, body').animate({
@@ -289,7 +392,11 @@ var ChatApp = React.createClass({
                         />
                     <ChangeNameForm
                         onChangeName={this.handleChangeName}
-                        className="col-sm-8"
+                        className="col-sm-3"
+                        />
+                    <ChangeStatusForm
+                        onChangeStatus={this.handleChangeStatus}
+                        className="col-sm-3"
                         />
                 </div>
             </div>
