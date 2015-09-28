@@ -1,0 +1,69 @@
+.users{
+    position:fixed !important;
+    top:15px;
+    right:15px;
+}
+.users ul{
+    list-style-type:none;
+    padding-left:0px;
+}
+
+.users li i{
+    margin-right:15px;
+}
+
+.user .status-active{
+    color: #2baaff;
+}
+.user .status-inactive{
+    color: #b0b0b0;
+}
+.user .status-playing{
+    color: #65bc5c;
+}
+.messages{
+    margin-top:35px;
+
+}
+.messages .messages-content{
+    overflow:auto;
+    margin-bottom:55px;
+}
+
+.container{
+    position:relative;
+}
+
+.row{
+    background-color:#fff;
+}
+
+.row.content{
+    min-height:100%;
+    padding-bottom:50px;
+}
+
+.row.fixed-bottom{
+    position:fixed;
+    bottom:0px;
+    padding-bottom:15px;
+    width:calc(100% - 15px);
+}
+
+@media (min-width: 768px){
+    .row.fixed-bottom{
+        width:750px;
+    }
+}
+
+@media (min-width: 992px){
+    .row.fixed-bottom{
+        width:970px;
+    }
+}
+
+@media (min-width: 1200px){
+    .row.fixed-bottom{
+        width:1170px;
+    }
+}

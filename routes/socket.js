@@ -4,11 +4,36 @@
 var _ = require('underscore');
 var userList = (function(){
     var users = [];
+    var bots = [];
     var guestIndex = 0;
-    users.push({
-        name:"Bot1",
-        status:"active"
-    });
+    createBots(4);
+    setIntervals();
+
+    function createBots(num){
+        var messages = ["Did you call my name, %s?","What do you want, %s?","Sup %s?"]
+        var statuses = ["active","inactive","playing"];
+        for(var i = 1; i <= num; i++){
+            var bot = {
+                name:"Bot" + i,
+                status:statuses[i%statuses.length],
+                standardMessage:messages[i%messages.length],
+                interval:2000
+            };
+            bots.push(bot);
+            users.push(bot);
+        }
+    }
+
+    function setIntervals(){
+        for(var i = 0; i < bots.length; i++){
+            var bot = bots[i];
+            setTimeout(function(){
+                var item = bot;
+                console.log(item.name + " should say something");
+            },bot.interval);
+        }
+    }
+
 
     function getAll(){
         return users;
@@ -58,16 +83,34 @@ var userList = (function(){
 
     function updateUsername(oldName, newName){
         // check if new name exists
+        console.log("updateUsername: " + oldName.name + " to " + newName);
         if(userNameExists(newName)){
+            console.log("usernameDoesNotExist");
             for(var i = 0; i < users.length; i++){
                 var tempUser = users[i];
-                if(tempUser.name == oldName){
+                console.log(tempUser);
+                if(tempUser.name == oldName.name){
                     tempUser.name = newName;
                     break;
                 }
             }
         }
+        console.dir(users);
 
+    }
+
+    function checkMessageWithBots(data){
+        console.log("checking message: " + data.text);
+        var bot = null;
+        for(var i = 0; i < bots.length; i++){
+            console.log(bots[i].name);
+            if(bots[i].name.toLowerCase() == data.text.toLowerCase()){
+                bot = bots[i];
+            }
+        }
+
+        console.log("Result of bot check: " + bot);
+        return bot;
     }
 
     return {
@@ -75,7 +118,8 @@ var userList = (function(){
         createUser:createUser,
         removeUser:removeUser,
         claimName:userNameExists,
-        updateUsername:updateUsername
+        updateUsername:updateUsername,
+        checkMessageWithBots:checkMessageWithBots
     };
 })();
 
@@ -83,7 +127,7 @@ module.exports = function (socket) {
     var user = userList.createUser();
 
     // send the new user their name and a list of users
-    socket.emit('init', {
+    socket.emit('initialize', {
         user: user,
         users: userList.getAll()
     });
@@ -97,8 +141,23 @@ module.exports = function (socket) {
     socket.on('send:message', function (data) {
         socket.broadcast.emit('send:message', {
             user: user,
-            text: data.text
+            text: data.text,
+            timestamp: getTimestamp()
         });
+        var bot = userList.checkMessageWithBots(data);
+        if(bot != null){
+            var message = bot.standardMessage.replace("%s",user.name);
+            socket.emit('send:message', {
+                user: bot,
+                text: message,
+                timestamp: getTimestamp()
+            });
+            socket.broadcast.emit('send:message', {
+                user: bot,
+                text: message,
+                timestamp: getTimestamp()
+            });
+        }
     });
 
     // validate a user's name change, and broadcast it on success
@@ -127,4 +186,16 @@ module.exports = function (socket) {
         });
         userList.removeUser(user);
     });
+
+    function getTimestamp(){
+        var now = new Date();
+        var day = ('0' + now.getDate()).slice(-2);
+        var month = ('0' + (now.getMonth() + 1)).slice(-2);
+        var year = now.getFullYear();
+        var hour = ('0' + now.getHours()).slice(-2);
+        var min = ('0' + now.getMinutes()).slice(-2);
+        var sec = ('0' + now.getSeconds()).slice(-2);
+
+        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+    }
 };

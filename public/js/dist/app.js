@@ -6,9 +6,10 @@ var UsersList = React.createClass({
     displayName: 'UsersList',
 
     render: function render() {
+        // TODO: ICON DOESNT WORK
         return React.createElement(
             'div',
-            { className: 'users' },
+            { className: 'users col-sm-4' },
             React.createElement(
                 'h3',
                 null,
@@ -18,10 +19,11 @@ var UsersList = React.createClass({
                 'ul',
                 null,
                 this.props.users.map(function (user, i) {
+                    var statusClass = "fa fa-gamepad status-" + user.status;
                     return React.createElement(
                         'li',
-                        { key: i },
-                        React.createElement('i', { className: 'fa fa-gamepad status-{user.status}' }),
+                        { key: i, className: 'user' },
+                        React.createElement('i', { className: statusClass }),
                         user.name,
                         ' (',
                         user.status,
@@ -43,6 +45,9 @@ var Message = React.createClass({
             React.createElement(
                 'strong',
                 null,
+                '[',
+                this.props.timestamp,
+                '] ',
                 this.props.user.name,
                 ': '
             ),
@@ -61,19 +66,19 @@ var MessageList = React.createClass({
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'messages' },
+            { className: 'messages col-sm-8' },
             React.createElement(
-                'h2',
-                null,
-                ' Conversation: '
-            ),
-            this.props.messages.map(function (message, i) {
-                return React.createElement(Message, {
-                    key: i,
-                    user: message.user,
-                    text: message.text
-                });
-            })
+                'div',
+                { className: 'messages-content' },
+                this.props.messages.map(function (message, i) {
+                    return React.createElement(Message, {
+                        key: i,
+                        user: message.user,
+                        timestamp: message.timestamp,
+                        text: message.text
+                    });
+                })
+            )
         );
     }
 });
@@ -102,7 +107,7 @@ var MessageForm = React.createClass({
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'message_form' },
+            { className: 'message_form col-sm-6' },
             React.createElement(
                 'h3',
                 null,
@@ -110,10 +115,11 @@ var MessageForm = React.createClass({
             ),
             React.createElement(
                 'form',
-                { onSubmit: this.handleSubmit },
+                { onSubmit: this.handleSubmit, className: 'form' },
                 React.createElement('input', {
                     onChange: this.changeHandler,
-                    value: this.state.text
+                    value: this.state.text,
+                    className: 'form-control'
                 })
             )
         );
@@ -141,7 +147,7 @@ var ChangeNameForm = React.createClass({
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'change_name_form' },
+            { className: 'change_name_form col-sm-6' },
             React.createElement(
                 'h3',
                 null,
@@ -149,10 +155,11 @@ var ChangeNameForm = React.createClass({
             ),
             React.createElement(
                 'form',
-                { onSubmit: this.handleSubmit },
+                { onSubmit: this.handleSubmit, className: 'form' },
                 React.createElement('input', {
                     onChange: this.onKey,
-                    value: this.state.newName
+                    value: this.state.newName,
+                    className: 'form-control'
                 })
             )
         );
@@ -167,7 +174,7 @@ var ChatApp = React.createClass({
     },
 
     componentDidMount: function componentDidMount() {
-        socket.on('init', this._initialize);
+        socket.on('initialize', this._initialize);
         socket.on('send:message', this._receiveMessage);
         socket.on('user:join', this._userJoined);
         socket.on('user:left', this._userLeft);
@@ -178,12 +185,17 @@ var ChatApp = React.createClass({
         var user = data.user;
         var users = data.users;
         this.setState({ users: users, user: user });
+        this.moveUI();
     },
 
     _receiveMessage: function _receiveMessage(message) {
+        message.timestamp = this.getTimestamp();
         var messages = this.state.messages;
         messages.push(message);
+        this.moveUI();
+        console.log(message);
         this.setState({ messages: messages });
+        this.moveUI();
     },
 
     _userJoined: function _userJoined(data) {
@@ -195,9 +207,11 @@ var ChatApp = React.createClass({
         users.push(data.user);
         messages.push({
             user: { name: 'STATUS' },
-            text: name + ' joined'
+            text: name + ' joined',
+            timestamp: this.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
+        this.moveUI();
     },
 
     _userLeft: function _userLeft(data) {
@@ -216,9 +230,11 @@ var ChatApp = React.createClass({
         users.splice(index, 1);
         messages.push({
             user: { name: 'STATUS' },
-            text: name + ' left'
+            text: name + ' left',
+            timestamp: this.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
+        this.moveUI();
     },
 
     _userChangedName: function _userChangedName(data) {
@@ -227,6 +243,7 @@ var ChatApp = React.createClass({
         var users = this.state.users;
         var messages = this.state.messages;
         for (var i = 0; i < users.length; i++) {
+            console.log("checking username " + users[i]);
             if (users[i].name == oldName) {
                 users[i].name = newName;
                 break;
@@ -234,50 +251,92 @@ var ChatApp = React.createClass({
         }
         messages.push({
             user: { name: 'STATUS' },
-            text: 'Change Name : ' + oldName + ' ==> ' + newName
+            text: 'Someone changed their name from ' + oldName + ' to ' + newName,
+            timestamp: this.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
+        this.moveUI();
     },
 
     handleMessageSubmit: function handleMessageSubmit(message) {
+        message.timestamp = this.getTimestamp();
+        console.dir(message);
         var messages = this.state.messages;
         messages.push(message);
         this.setState({ messages: messages });
         socket.emit('send:message', message);
+        this.moveUI();
     },
 
     handleChangeName: function handleChangeName(newName) {
         var _this = this;
 
-        var oldName = this.state.user;
+        var user = this.state.user;
         socket.emit('change:name', { name: newName }, function (result) {
             if (!result) {
                 return alert('There was an error changing your name');
             }
             var users = _this.state.users;
-            var index = users.indexOf(oldName);
-            users.splice(index, 1, newName);
-            _this.setState({ users: users, user: newName });
+            for (var i = 0; i < users.length; i++) {
+                console.log("checking username " + users[i]);
+                if (users[i].name == user.name) {
+                    users[i].name = newName;
+                    user.name = newName;
+                    break;
+                }
+            }
+            _this.setState({ users: users, user: user });
+            _this.moveUI();
         });
+
+        this.moveUI();
+    },
+    moveUI: function moveUI() {
+        console.log("move ui");
+        $('html, body').animate({
+            scrollTop: $('body').height()
+        }, 'slow');
+    },
+    getTimestamp: function getTimestamp() {
+        var now = new Date();
+        var day = ('0' + now.getDate()).slice(-2);
+        var month = ('0' + (now.getMonth() + 1)).slice(-2);
+        var year = now.getFullYear();
+        var hour = ('0' + now.getHours()).slice(-2);
+        var min = ('0' + now.getMinutes()).slice(-2);
+        var sec = ('0' + now.getSeconds()).slice(-2);
+
+        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
     },
 
     render: function render() {
         return React.createElement(
             'div',
-            null,
-            React.createElement(UsersList, {
-                users: this.state.users
-            }),
-            React.createElement(MessageList, {
-                messages: this.state.messages
-            }),
-            React.createElement(MessageForm, {
-                onMessageSubmit: this.handleMessageSubmit,
-                user: this.state.user
-            }),
-            React.createElement(ChangeNameForm, {
-                onChangeName: this.handleChangeName
-            })
+            { className: 'container' },
+            React.createElement(
+                'div',
+                { className: 'row content' },
+                React.createElement(MessageList, {
+                    messages: this.state.messages
+                }),
+                React.createElement(UsersList, {
+                    users: this.state.users,
+                    className: 'col-sm-4'
+                })
+            ),
+            React.createElement(
+                'div',
+                { className: 'row fixed-bottom' },
+                React.createElement(MessageForm, {
+                    onMessageSubmit: this.handleMessageSubmit,
+                    user: this.state.user,
+                    className: 'col-sm-6'
+                }),
+                React.createElement(ChangeNameForm, {
+                    onChangeName: this.handleChangeName,
+                    className: 'col-sm-8'
+                })
+            )
         );
     }
 });
