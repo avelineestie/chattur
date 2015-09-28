@@ -233,7 +233,9 @@ var ChangeStatusForm = React.createClass({
                     ),
                     React.createElement(
                         "button",
-                        { type: "submit", className: "btn btn-success col-sm-12" },
+                        { type: "submit",
+                            className: "btn btn-success col-sm-12",
+                            disabled: this.state.status == '' },
                         "Update status"
                     )
                 )
