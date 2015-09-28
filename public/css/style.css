@@ -1,3 +1,7 @@
+html body{
+    background-color:#f4eae2;
+    color:#333;
+}
 .users{
     position:fixed !important;
     top:15px;
@@ -13,13 +17,13 @@
 }
 
 .user .status-active{
-    color: #2baaff;
+    color: #ffd72c;
 }
 .user .status-inactive{
     color: #b0b0b0;
 }
 .user .status-playing{
-    color: #65bc5c;
+    color: #2baaff;
 }
 .messages{
     margin-top:35px;
@@ -30,12 +34,16 @@
     margin-bottom:55px;
 }
 
+.change_name_form{
+    margin-bottom:15px;
+}
+
 .container{
     position:relative;
 }
 
 .row{
-    background-color:#fff;
+    background-color: #f4eae2;
 }
 
 .row.content{
@@ -48,6 +56,10 @@
     bottom:0px;
     padding-bottom:15px;
     width:calc(100% - 15px);
+}
+
+.row.fixed-bottom .col-sm-4{
+    border-left:1px solid #ffd72c;
 }
 
 @media (min-width: 768px){
@@ -66,4 +78,28 @@
     .row.fixed-bottom{
         width:1170px;
     }
+}
+
+input.form-control, textarea.form-control, button.btn, select.form-control{
+    border-radius:0;
+    border:0;
+    outline:none !important;
+}
+
+form > textarea.form-control{
+    height:129.5px;
+}
+
+button.btn.btn-success{
+    transition:background-color 0.3s;
+    background-color:#ffd72c;
+    margin-top:15px;
+}
+
+button.btn.btn-success:hover{
+    background-color: #e2b725;
+}
+
+button.btn.btn-success:focus, button.btn.btn-success:target{
+    background-color: #d6ad23;
 }

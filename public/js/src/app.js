@@ -75,7 +75,7 @@ var MessageForm = React.createClass({
         var message = {
             user : this.props.user,
             text : this.state.text
-        }
+        };
         this.props.onMessageSubmit(message);
         this.setState({ text: '' });
     },
@@ -86,15 +86,17 @@ var MessageForm = React.createClass({
 
     render() {
         return(
-            <div className='message_form col-sm-6'>
-                <h3>Write New Message</h3>
-                <form onSubmit={this.handleSubmit} className="form">
-                    <input
-                        onChange={this.changeHandler}
-                        value={this.state.text}
-                      className="form-control"
-                        />
-                </form>
+            <div className='message_form row'>
+                <div className="col-sm-12">
+                    <form onSubmit={this.handleSubmit} className="form">
+                        <textarea
+                            onChange={this.changeHandler}
+                            value={this.state.text}
+                          className="form-control"
+                            rows="7"></textarea>
+                        <button type="submit" className="btn btn-success col-sm-12">Send message</button>
+                    </form>
+                </div>
             </div>
         );
     }
@@ -102,11 +104,11 @@ var MessageForm = React.createClass({
 
 var ChangeNameForm = React.createClass({
     getInitialState() {
-        return {status: ''};
+        return {newName: this.props.user.name || ''};
     },
 
     onKey(e) {
-        this.setState({ status : e.target.value });
+        this.setState({ newName : e.target.value });
     },
 
     handleSubmit(e) {
@@ -118,15 +120,18 @@ var ChangeNameForm = React.createClass({
 
     render() {
         return(
-            <div className='change_name_form col-sm-6'>
-                <h3> Change Name </h3>
-                <form onSubmit={this.handleSubmit} className="form">
-                    <input
-                        onChange={this.onKey}
-                        value={this.state.newName}
-                        className="form-control"
-                        />
-                </form>
+            <div className='row change_name_form'>
+                <div className="col-sm-12">
+                    <form onSubmit={this.handleSubmit} className="form">
+                        <input
+                            onChange={this.onKey}
+                            value={this.state.newName}
+                            className="form-control"
+                            placeholder="Choose a new name"
+                            />
+                        <button type="submit" className="btn btn-success col-sm-12">Save name <span className="small">(or pres ENTER)</span></button>
+                    </form>
+                </div>
             </div>
         );
     }
@@ -154,21 +159,21 @@ var ChangeStatusForm = React.createClass({
     render() {
         // something wrong with the props?
         return(
-            <div className='change_status_form col-sm-6'>
-                <h3> Change Status </h3>
-                <form onSubmit={this.handleSubmit} className="form">
-                    <select className="form-control" onChange={this.storeOption} >
-                        {
-                            statuses.map((status, i) => {
-                                return (
-                                    <option value={status}>{status}</option>
-                                );
-                            })
-                        }
-                    </select>
-                    <button type="submit">Save</button>
-                </form>
-
+            <div className='row change_status_form'>
+                <div className="col-sm-12">
+                    <form onSubmit={this.handleSubmit} className="form">
+                        <select className="form-control" onChange={this.storeOption} >
+                            {
+                                statuses.map((status, i) => {
+                                    return (
+                                        <option value={status}>{status}</option>
+                                    );
+                                })
+                            }
+                        </select>
+                        <button type="submit" className="btn btn-success col-sm-12">Save</button>
+                    </form>
+                </div>
             </div>
         );
     }
@@ -178,6 +183,9 @@ var ChatApp = React.createClass({
 
     getInitialState() {
         return {users: [],
+            user:{
+                name:""
+            },
             messages:[],
             text: '',
             statuses:[
@@ -198,6 +206,7 @@ var ChatApp = React.createClass({
     _initialize(data) {
         var user = data.user;
         var users = data.users;
+        console.log(user);
         this.setState({users, user: user});
         this.moveUI();
     },
@@ -381,23 +390,26 @@ var ChatApp = React.createClass({
                         />
                     <UsersList
                         users={this.state.users}
-                        className="col-sm-4"
                         />
                 </div>
                 <div className="row fixed-bottom">
+                    <div className="col-sm-8">
+                        <h3>New message</h3>
                     <MessageForm
                         onMessageSubmit={this.handleMessageSubmit}
                         user={this.state.user}
-                        className="col-sm-6"
                         />
-                    <ChangeNameForm
+                    </div>
+                    <div className="col-sm-4">
+                        <h3>Settings <i class="fa fa-cog"></i></h3>
+                        <ChangeNameForm
                         onChangeName={this.handleChangeName}
-                        className="col-sm-3"
+                        user={this.state.user}
                         />
                     <ChangeStatusForm
                         onChangeStatus={this.handleChangeStatus}
-                        className="col-sm-3"
                         />
+                    </div>
                 </div>
             </div>
         );

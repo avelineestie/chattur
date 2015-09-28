@@ -7,7 +7,6 @@ var userList = (function(){
     var bots = [];
     var guestIndex = 0;
     createBots(4);
-    setIntervals();
 
     function createBots(num){
         var messages = ["Did you call my name, %s?","What do you want, %s?","Sup %s?"]
@@ -16,24 +15,12 @@ var userList = (function(){
             var bot = {
                 name:"Bot" + i,
                 status:statuses[i%statuses.length],
-                standardMessage:messages[i%messages.length],
-                interval:2000
+                standardMessage:messages[i%messages.length]
             };
             bots.push(bot);
             users.push(bot);
         }
     }
-
-    function setIntervals(){
-        for(var i = 0; i < bots.length; i++){
-            var bot = bots[i];
-            setTimeout(function(){
-                var item = bot;
-                console.log(item.name + " should say something");
-            },bot.interval);
-        }
-    }
-
 
     function getAll(){
         return users;
@@ -46,7 +33,6 @@ var userList = (function(){
         do{
             name = "Guest" + guestIndex;
             result = userNameExists(name);
-            console.log(result);
             if(result == false){
                 guestIndex++;
             }
@@ -63,7 +49,6 @@ var userList = (function(){
     }
 
     function userNameExists(name){
-        console.log(name);
         var result = _.find(users, function(user){ return user.name == name });
 
         if(result == undefined){
@@ -76,15 +61,15 @@ var userList = (function(){
     }
 
     function removeUser(user){
-        var result = _.reject(users, function(userItem){ return userItem.name == user.name });
-        console.log(result);
+        var result = _.reject(users, function(userItem){
+            return userItem.name == user.name
+        });
         users = result;
     }
 
     function updateUsername(user, newName){
         // check if new name exists
         if(userNameExists(newName)){
-            console.log("usernameDoesNotExist");
             for(var i = 0; i < users.length; i++){
                 if(users[i].name == user.name){
                     users[i].name = newName;
@@ -96,10 +81,7 @@ var userList = (function(){
 
     function updateStatus(user, status){
         // check if new name exists
-        console.log("update status!");
         for(var i = 0; i < users.length; i++){
-            var tempUser = users[i];
-            console.log(tempUser);
             if(users[i].name == user.name){
                 users[i].status = status;
                 break;
@@ -109,7 +91,6 @@ var userList = (function(){
     }
 
     function checkMessageWithBots(data){
-        console.log("checking message: " + data.text);
         var bot = null;
         for(var i = 0; i < bots.length; i++){
             if(bots[i].name.toLowerCase() == data.text.toLowerCase()){
@@ -117,7 +98,6 @@ var userList = (function(){
             }
         }
 
-        console.log("Result of bot check: " + bot);
         return bot;
     }
 
@@ -175,11 +155,11 @@ module.exports = function (socket) {
             var oldName = user.name;
             userList.updateUsername(user, data.name);
             //userNames.free(oldName);
-            name = data.name;
+            var newName = data.name;
 
             socket.broadcast.emit('change:name', {
                 oldName: oldName,
-                newName: name
+                newName: newName
             });
 
             fn(true);

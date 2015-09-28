@@ -109,20 +109,24 @@ var MessageForm = React.createClass({
     render: function render() {
         return React.createElement(
             "div",
-            { className: "message_form col-sm-6" },
+            { className: "message_form row" },
             React.createElement(
-                "h3",
-                null,
-                "Write New Message"
-            ),
-            React.createElement(
-                "form",
-                { onSubmit: this.handleSubmit, className: "form" },
-                React.createElement("input", {
-                    onChange: this.changeHandler,
-                    value: this.state.text,
-                    className: "form-control"
-                })
+                "div",
+                { className: "col-sm-12" },
+                React.createElement(
+                    "form",
+                    { onSubmit: this.handleSubmit, className: "form" },
+                    React.createElement("textarea", {
+                        onChange: this.changeHandler,
+                        value: this.state.text,
+                        className: "form-control",
+                        rows: "7" }),
+                    React.createElement(
+                        "button",
+                        { type: "submit", className: "btn btn-success col-sm-12" },
+                        "Send message"
+                    )
+                )
             )
         );
     }
@@ -132,11 +136,11 @@ var ChangeNameForm = React.createClass({
     displayName: "ChangeNameForm",
 
     getInitialState: function getInitialState() {
-        return { status: '' };
+        return { newName: this.props.user.name || '' };
     },
 
     onKey: function onKey(e) {
-        this.setState({ status: e.target.value });
+        this.setState({ newName: e.target.value });
     },
 
     handleSubmit: function handleSubmit(e) {
@@ -149,20 +153,30 @@ var ChangeNameForm = React.createClass({
     render: function render() {
         return React.createElement(
             "div",
-            { className: "change_name_form col-sm-6" },
+            { className: "row change_name_form" },
             React.createElement(
-                "h3",
-                null,
-                " Change Name "
-            ),
-            React.createElement(
-                "form",
-                { onSubmit: this.handleSubmit, className: "form" },
-                React.createElement("input", {
-                    onChange: this.onKey,
-                    value: this.state.newName,
-                    className: "form-control"
-                })
+                "div",
+                { className: "col-sm-12" },
+                React.createElement(
+                    "form",
+                    { onSubmit: this.handleSubmit, className: "form" },
+                    React.createElement("input", {
+                        onChange: this.onKey,
+                        value: this.state.newName,
+                        className: "form-control",
+                        placeholder: "Choose a new name"
+                    }),
+                    React.createElement(
+                        "button",
+                        { type: "submit", className: "btn btn-success col-sm-12" },
+                        "Save name ",
+                        React.createElement(
+                            "span",
+                            { className: "small" },
+                            "(or pres ENTER)"
+                        )
+                    )
+                )
             )
         );
     }
@@ -191,30 +205,29 @@ var ChangeStatusForm = React.createClass({
         // something wrong with the props?
         return React.createElement(
             "div",
-            { className: "change_status_form col-sm-6" },
+            { className: "row change_status_form" },
             React.createElement(
-                "h3",
-                null,
-                " Change Status "
-            ),
-            React.createElement(
-                "form",
-                { onSubmit: this.handleSubmit, className: "form" },
+                "div",
+                { className: "col-sm-12" },
                 React.createElement(
-                    "select",
-                    { className: "form-control", onChange: this.storeOption },
-                    statuses.map(function (status, i) {
-                        return React.createElement(
-                            "option",
-                            { value: status },
-                            status
-                        );
-                    })
-                ),
-                React.createElement(
-                    "button",
-                    { type: "submit" },
-                    "Save"
+                    "form",
+                    { onSubmit: this.handleSubmit, className: "form" },
+                    React.createElement(
+                        "select",
+                        { className: "form-control", onChange: this.storeOption },
+                        statuses.map(function (status, i) {
+                            return React.createElement(
+                                "option",
+                                { value: status },
+                                status
+                            );
+                        })
+                    ),
+                    React.createElement(
+                        "button",
+                        { type: "submit", className: "btn btn-success col-sm-12" },
+                        "Save"
+                    )
                 )
             )
         );
@@ -226,6 +239,9 @@ var ChatApp = React.createClass({
 
     getInitialState: function getInitialState() {
         return { users: [],
+            user: {
+                name: ""
+            },
             messages: [],
             text: '',
             statuses: ["active", "inactive", "playing"]
@@ -244,6 +260,7 @@ var ChatApp = React.createClass({
     _initialize: function _initialize(data) {
         var user = data.user;
         var users = data.users;
+        console.log(user);
         this.setState({ users: users, user: user });
         this.moveUI();
     },
@@ -432,26 +449,42 @@ var ChatApp = React.createClass({
                     messages: this.state.messages
                 }),
                 React.createElement(UsersList, {
-                    users: this.state.users,
-                    className: "col-sm-4"
+                    users: this.state.users
                 })
             ),
             React.createElement(
                 "div",
                 { className: "row fixed-bottom" },
-                React.createElement(MessageForm, {
-                    onMessageSubmit: this.handleMessageSubmit,
-                    user: this.state.user,
-                    className: "col-sm-6"
-                }),
-                React.createElement(ChangeNameForm, {
-                    onChangeName: this.handleChangeName,
-                    className: "col-sm-3"
-                }),
-                React.createElement(ChangeStatusForm, {
-                    onChangeStatus: this.handleChangeStatus,
-                    className: "col-sm-3"
-                })
+                React.createElement(
+                    "div",
+                    { className: "col-sm-8" },
+                    React.createElement(
+                        "h3",
+                        null,
+                        "New message"
+                    ),
+                    React.createElement(MessageForm, {
+                        onMessageSubmit: this.handleMessageSubmit,
+                        user: this.state.user
+                    })
+                ),
+                React.createElement(
+                    "div",
+                    { className: "col-sm-4" },
+                    React.createElement(
+                        "h3",
+                        null,
+                        "Settings ",
+                        React.createElement("i", { "class": "fa fa-cog" })
+                    ),
+                    React.createElement(ChangeNameForm, {
+                        onChangeName: this.handleChangeName,
+                        user: this.state.user
+                    }),
+                    React.createElement(ChangeStatusForm, {
+                        onChangeStatus: this.handleChangeStatus
+                    })
+                )
             )
         );
     }
