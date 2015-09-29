@@ -2,24 +2,62 @@
  * Created by Aveline on 25/09/15.
  */
 var _ = require('underscore');
+var Bot = require('./Bot');
+
 var userList = (function(){
     var users = [];
     var bots = [];
+    var messageQueue = [];
     var guestIndex = 0;
     createBots(4);
 
     function createBots(num){
-        var messages = ["Did you call my name, %s?","What do you want, %s?","Sup %s?"]
+        var automessages = ["NANANANANANA, BATMAN!","I come from the shadows."];
         var statuses = ["active","inactive","playing"];
-        for(var i = 1; i <= num; i++){
-            var bot = {
-                name:"Bot" + i,
-                status:statuses[i%statuses.length],
-                standardMessage:messages[i%messages.length]
-            };
-            bots.push(bot);
-            users.push(bot);
-        }
+
+        var bot1 = new Bot();
+        bot1.setName("Batman");
+        bot1.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
+        bot1.setAutoMessages(automessages);
+        bots.push(bot1);
+        setInterval(
+            function(){
+                var message = {
+                    user: bot1.getObject(),
+                    text: bot1.getAutoMessage(),
+                    timestamp: getTimestamp()
+                };
+                messageQueue.push(message);
+                bot1.setTimeout();
+            },bot1.getTimeout()
+        );
+
+        var bot2 = new Bot();
+        bot2.setName("Catwoman");
+        bot2.setStatus("inactive");
+        automessages = ["NANANANANANA, CATWOMAN!","MEEEOWWW!","You can't handle me without gloves on..."];
+        bot2.setAutoMessages(automessages);
+        bots.push(bot2);
+        setInterval(
+            function(){
+                var message = {
+                    user: bot2.getObject(),
+                    text: bot2.getAutoMessage(),
+                    timestamp: getTimestamp()
+                };
+                messageQueue.push(message);
+                bot2.setTimeout();
+            },bot2.getTimeout()
+        );
+
+        users.push(bot1.getObject());
+        users.push(bot2.getObject());
+    }
+
+    function getMessageQueue(){
+        var msgq = messageQueue;
+        messageQueue = [];
+        return msgq;
     }
 
     function getAll(){
@@ -93,7 +131,9 @@ var userList = (function(){
     function checkMessageWithBots(data){
         var bot = null;
         for(var i = 0; i < bots.length; i++){
-            if(bots[i].name.toLowerCase() == data.text.toLowerCase()){
+            var tempBot = bots[i].getObject();
+            console.log(tempBot);
+            if(tempBot.name.toLowerCase() == data.text.toLowerCase()){
                 bot = bots[i];
             }
         }
@@ -108,7 +148,8 @@ var userList = (function(){
         claimName:userNameExists,
         updateUsername:updateUsername,
         updateStatus:updateStatus,
-        checkMessageWithBots:checkMessageWithBots
+        checkMessageWithBots:checkMessageWithBots,
+        getMessageQueue: getMessageQueue
     };
 })();
 
@@ -120,6 +161,15 @@ module.exports = function (socket) {
         user: user,
         users: userList.getAll()
     });
+
+    setInterval(function(){
+        var messages = userList.getMessageQueue();
+        for(var i = 0; i < messages.length; i++){
+            console.log(messages[i].user);
+            socket.emit('send:message', messages[i]);
+            socket.broadcast.emit('send:message', messages[i]);
+        }
+    },1000);
 
     // notify other clients that a new user has joined
     socket.broadcast.emit('user:join', {
@@ -134,15 +184,17 @@ module.exports = function (socket) {
             timestamp: getTimestamp()
         });
         var bot = userList.checkMessageWithBots(data);
+
         if(bot != null){
-            var message = bot.standardMessage.replace("%s",user.name);
+            console.log("Bot is: " + bot.getObject());
+            var message = bot.getMessage().replace("%s",user.name);
             socket.emit('send:message', {
-                user: bot,
+                user: bot.getObject(),
                 text: message,
                 timestamp: getTimestamp()
             });
             socket.broadcast.emit('send:message', {
-                user: bot,
+                user: bot.getObject(),
                 text: message,
                 timestamp: getTimestamp()
             });
@@ -190,15 +242,17 @@ module.exports = function (socket) {
         userList.removeUser(user);
     });
 
-    function getTimestamp(){
-        var now = new Date();
-        var day = ('0' + now.getDate()).slice(-2);
-        var month = ('0' + (now.getMonth() + 1)).slice(-2);
-        var year = now.getFullYear();
-        var hour = ('0' + now.getHours()).slice(-2);
-        var min = ('0' + now.getMinutes()).slice(-2);
-        var sec = ('0' + now.getSeconds()).slice(-2);
 
-        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
-    }
 };
+
+function getTimestamp(){
+    var now = new Date();
+    var day = ('0' + now.getDate()).slice(-2);
+    var month = ('0' + (now.getMonth() + 1)).slice(-2);
+    var year = now.getFullYear();
+    var hour = ('0' + now.getHours()).slice(-2);
+    var min = ('0' + now.getMinutes()).slice(-2);
+    var sec = ('0' + now.getSeconds()).slice(-2);
+
+    return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+}
