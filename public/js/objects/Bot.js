@@ -1,10 +1,10 @@
 var Bot = (function () {
     var _randomTime = 0,
         _randomStatusTime = 0,
-        _name = "",
-        _status = "",
-        _messages = ["Did you call my name, %s?","How are you, %s?","Sup %s?","Yo %s!"],
-        _statuses = ["active","inactive","playing"],
+        _name = '',
+        _status = '',
+        _messages = ['Did you call my name, %s?','How are you, %s?','Sup %s?','Yo %s!'],
+        _statuses = ['active', 'inactive', 'playing'],
         _autoMessages = [],
         _messageQueue = [],
         _statusQueue = [],
@@ -14,10 +14,10 @@ var Bot = (function () {
             _setTimeout();
         },
         _createRandomTime = function(){
-            _randomTime = Math.max(parseInt(Math.floor(Math.random() * 40000) + 5000),20000);
+            _randomTime = Math.max(parseInt(Math.floor(Math.random() * 40000) + 5000), 20000);
         },
         _createRandomStatusTime = function(){
-            _randomStatusTime = Math.max(parseInt(Math.floor(Math.random() * 60000) + 5000),20000);
+            _randomStatusTime = Math.max(parseInt(Math.floor(Math.random() * 60000) + 5000), 20000);
         },
         _setTimeout = function () {
             setInterval(
@@ -28,9 +28,9 @@ var Bot = (function () {
                         timestamp: _getTimestamp()
                     };
                     _messageQueue.push(message);
-                    console.log("Added message for " + message.user.name);
+                    console.log('Added message for ' + message.user.name);
                     _createRandomTime();
-                },_randomTime
+                }, _randomTime
             );
             setInterval(
                 function(){
@@ -38,7 +38,7 @@ var Bot = (function () {
                     var statusText = _getObject().status;
                     do{
                         var tempStatus = _statuses[Math.floor(Math.random() * _statuses.length)];
-                        if(tempStatus != statusText){
+                        if (tempStatus != statusText) {
                             isSame = false;
                             statusText = tempStatus;
                         }
@@ -48,9 +48,9 @@ var Bot = (function () {
                         status: _statuses[Math.floor(Math.random() * _statuses.length)]
                     };
                     _statusQueue.push(status);
-                    console.log("Added status for " + status.user.name);
+                    console.log('Added status for ' + status.user.name);
                     _createRandomStatusTime();
-                },_randomStatusTime
+                }, _randomStatusTime
             );
         },
         _getTimeout = function(){
@@ -98,7 +98,7 @@ var Bot = (function () {
             var min = ('0' + now.getMinutes()).slice(-2);
             var sec = ('0' + now.getSeconds()).slice(-2);
 
-            return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+            return day + '/' + month + '/' + year + ' ' + hour + ':' + min + ':' + sec;
         },
         _getMessageQueue = function(){
             return _messageQueue;

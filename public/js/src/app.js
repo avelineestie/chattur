@@ -3,11 +3,11 @@ var socket = io.connect();
 var _ = require('underscore');
 
 var UserList = React.createClass({
-    componentDidMount(){
-        setTimeout(function(){
+    componentDidMount() {
+        setTimeout( function() {
             setupUserlist();
 
-        },250);
+        }, 250);
     },
     render() {
         return (
@@ -122,14 +122,14 @@ var ChangeNameForm = React.createClass({
         return {newName: this.props.user.name || ''};
     },
 
-    onKey (e) {
+    onKey(e) {
         if(e.target.value.length > 20){
             console.error("Should show error now!");
         }
         this.setState({ newName : e.target.value });
     },
 
-    handleSubmit (e) {
+    handleSubmit(e) {
         e.preventDefault();
         var newName = this.state.newName;
         if(newName.length > 0 && newName.length < 21){
@@ -138,7 +138,7 @@ var ChangeNameForm = React.createClass({
         }
     },
 
-    render () {
+    render() {
         return(
             <div className='row change_name_form'>
                 <div className="col-xs-12">
