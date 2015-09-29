@@ -4,20 +4,21 @@
 }
 
 @font-face{
-    font-family: "Open Sans Regular";
-    src: url(../fonts/OpenSans-Regular.ttf);
+    font-family: "Open Sans";
+    src: url(../fonts/OpenSans-Semibold.ttf);
     font-weight: 700;
 }
 
 @font-face{
-    font-family: "Open Sans Light";
+    font-family: "Open Sans";
     src: url(../fonts/OpenSans-Light.ttf);
-    font-weight: 400;
+    font-weight: 300;
 }
 html body{
     background-color: #fff7f2;
     color:#333;
-    font-family: "Open Sans Light","Helvetica","Tahoma",sans-serif;
+    font-family: "Open Sans","Helvetica","Tahoma",sans-serif;
+    font-weight:300;
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -42,6 +43,11 @@ h1, h2, h3, h4, h5, h6{
     margin-right:15px;
 }
 
+.user.current{
+    font-weight:700;
+    /*color:#2baaff;*/
+}
+
 .user .status-active{
     color: #ffd72c;
 }
@@ -57,7 +63,7 @@ h1, h2, h3, h4, h5, h6{
 }
 .messages .messages-content{
     overflow:auto;
-    margin-bottom:195px;
+    margin-bottom:197px;
 }
 
 .message{
@@ -67,8 +73,6 @@ h1, h2, h3, h4, h5, h6{
 .message .message__timestamp{
     color:#aaaaaa;
 }
-
-
 
 .change_name_form{
     margin-bottom:15px;
@@ -93,7 +97,7 @@ h1, h2, h3, h4, h5, h6{
 
 .row.fixed-bottom{
     position:fixed;
-    bottom:0px;
+    bottom:0;
     padding-bottom:15px;
     width:calc(100% - 15px);
 }

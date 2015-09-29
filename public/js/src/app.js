@@ -14,8 +14,10 @@ var UserList = React.createClass({
                     {
                         this.props.users.map((user, i) => {
                             var statusClass = "fa fa-gamepad status-" + user.status;
+                            var userClass = "user";
+                            userClass += this.props.user.name == user.name ? " current": "";
                             return (
-                                <li key={i} className="user">
+                                <li key={i} className={userClass}>
                                     <i className={statusClass} alt={user.status}></i>
                                     {user.name}
                                 </li>
@@ -215,7 +217,6 @@ var ChatApp = React.createClass({
     _initialize(data) {
         var user = data.user;
         var users = data.users;
-        console.log(user);
         this.setState({users, user: user});
         this.moveUI();
     },
@@ -225,21 +226,18 @@ var ChatApp = React.createClass({
         var messages = this.state.messages;
         messages.push(message);
         this.moveUI();
-        console.log(message);
         this.setState({messages});
         this.moveUI();
     },
 
     _userJoined(data) {
-        console.log("JOINED!");
-        console.log(data);
         var users = this.state.users;
         var messages = this.state.messages;
         var name = data.user.name;
         users.push(data.user);
         messages.push({
-            user: {name:'STATUS'},
-            text : name +' joined',
+            user: {name:'CHATTUR'},
+            text : name +' joined the Chattur-madness.',
             timestamp: this.getTimestamp()
         });
         this.setState({users, messages});
@@ -247,8 +245,6 @@ var ChatApp = React.createClass({
     },
 
     _userLeft(data) {
-        console.log("LEFT!");
-        console.log(data);
         var users = this.state.users;
         var messages = this.state.messages;
         var name = data.user.name;
@@ -261,8 +257,8 @@ var ChatApp = React.createClass({
         }
         users.splice(index, 1);
         messages.push({
-            user: {name:'STATUS'},
-            text : name +' left',
+            user: {name:'CHATTUR'},
+            text : name +' has left the building. *drops mic*',
             timestamp: this.getTimestamp()
         });
         this.setState({users, messages});
@@ -275,15 +271,14 @@ var ChatApp = React.createClass({
         var users = this.state.users;
         var messages = this.state.messages;
         for(var i = 0; i < users.length; i++){
-            console.log("checking username " + users[i]);
             if(users[i].name == oldName){
                 users[i].name = newName;
                 break;
             }
         }
         messages.push({
-            user: {name:'STATUS'},
-            text : 'Someone changed their name from ' + oldName + ' to '+ newName,
+            user: {name:'CHATTUR'},
+            text : oldName + ' wants to be called '+ newName + ' from now on.',
             timestamp: this.getTimestamp()
         });
         this.setState({users, messages});
@@ -291,23 +286,23 @@ var ChatApp = React.createClass({
     },
 
     _userChangedStatus(data) {
-        console.log("User changed status!");
-        console.log(data);
-        var oldStatus = user.status;
-        var user = data.user;
+        console.log("_userChangedStatus");
+        console.log(data.user);
+        console.log(data.status);
+        var oldStatus = this.state.user.status;
+        var changedUser = data.user;
         var status = data.status;
         var users = this.state.users;
         var messages = this.state.messages;
         for(var i = 0; i < users.length; i++){
-            console.log("checking username " + users[i]);
-            if(users[i].name == user.name){
+            if(users[i].name == changedUser.name){
                 users[i].status = status;
                 break;
             }
         }
         messages.push({
-            user: {name:'STATUS'},
-            text : 'Someone changed their status from ' + oldStatus + ' to '+ status,
+            user: {name:'CHATTUR'},
+            text : changedUser.name + " is now " + status,
             timestamp: this.getTimestamp()
         });
         this.setState({users, messages});
@@ -316,7 +311,6 @@ var ChatApp = React.createClass({
 
     handleMessageSubmit(message) {
         message.timestamp = this.getTimestamp();
-        console.dir(message);
         var messages = this.state.messages;
         messages.push(message);
         this.setState({messages});
@@ -329,11 +323,10 @@ var ChatApp = React.createClass({
         var user = this.state.user;
         socket.emit('change:name', { name : newName}, (result) => {
             if(!result) {
-                return alert('There was an error changing your name');
+                return alert('There was an error changing your name, please try again soon!');
             }
             var users = this.state.users;
             for(var i = 0; i < users.length; i++){
-                console.log("checking username " + users[i]);
                 if(users[i].name == user.name){
                     users[i].name = newName;
                     user.name = newName;
@@ -343,52 +336,45 @@ var ChatApp = React.createClass({
             this.setState({users, user: user});
             this.moveUI();
         });
-
-        this.moveUI();
     },
 
     handleChangeStatus(status) {
-        console.log("User changed status!");
-        console.log(status);
-    var user = this.state.user;
-    socket.emit('change:status', { status : status}, (result) => {
-        console.log("User status withing scope");
-        console.log(result);
-        if(!result) {
-            return alert('There was an error changing your status');
-        }
-        var users = this.state.users;
-        for(var i = 0; i < users.length; i++){
-            console.log("checking username " + users[i]);
-            if(users[i].name == user.name){
-                users[i].status = status;
-                user.status = status;
-                break;
-            }
-        }
-        this.setState({users, user: user});
-        this.moveUI();
-    });
+        var user = this.state.user;
 
-    this.moveUI();
-},
+        socket.emit('change:status', { status : status}, (result) => {
+            if(!result) {
+                return alert('There was an error changing your status, please try again soon!');
+            }
+            var users = this.state.users;
+            for(var i = 0; i < users.length; i++){
+                if(users[i].name == user.name){
+                    users[i].status = status;
+                    user.status = status;
+                    break;
+                }
+            }
+            this.setState({users, user: user});
+            this.moveUI();
+        });
+    },
     moveUI(){
-        console.log("move ui");
+        console.log("MOVEUI");
         $('html, body').animate({
             scrollTop: $('body').height()
         }, 'slow');
     },
-    getTimestamp(){
-    var now = new Date();
-    var day = ('0' + now.getDate()).slice(-2);
-    var month = ('0' + (now.getMonth() + 1)).slice(-2);
-    var year = now.getFullYear();
-    var hour = ('0' + now.getHours()).slice(-2);
-    var min = ('0' + now.getMinutes()).slice(-2);
-    var sec = ('0' + now.getSeconds()).slice(-2);
 
-    return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
-},
+    getTimestamp(){
+        var now = new Date();
+        var day = ('0' + now.getDate()).slice(-2);
+        var month = ('0' + (now.getMonth() + 1)).slice(-2);
+        var year = now.getFullYear();
+        var hour = ('0' + now.getHours()).slice(-2);
+        var min = ('0' + now.getMinutes()).slice(-2);
+        var sec = ('0' + now.getSeconds()).slice(-2);
+
+        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+    },
 
     render() {
         return (
@@ -402,6 +388,7 @@ var ChatApp = React.createClass({
                     <div className="col-sm-3 chattur__userlist">
                         <UserList
                             users={this.state.users}
+                            user={this.state.user}
                         />
                     </div>
                 </div>
@@ -430,3 +417,10 @@ var ChatApp = React.createClass({
 });
 
 React.render(<ChatApp/>, document.getElementById('app'));
+
+$(window).resize(function(e){
+    console.log("resized");
+    $('html, body').animate({
+        scrollTop: $('body').height()
+    }, 'slow');
+});

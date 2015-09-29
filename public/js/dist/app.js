@@ -8,6 +8,8 @@ var UserList = React.createClass({
     displayName: "UserList",
 
     render: function render() {
+        var _this = this;
+
         return React.createElement(
             "div",
             { className: "users" },
@@ -22,9 +24,11 @@ var UserList = React.createClass({
                 null,
                 this.props.users.map(function (user, i) {
                     var statusClass = "fa fa-gamepad status-" + user.status;
+                    var userClass = "user";
+                    userClass += _this.props.user.name == user.name ? " current" : "";
                     return React.createElement(
                         "li",
-                        { key: i, className: "user" },
+                        { key: i, className: userClass },
                         React.createElement("i", { className: statusClass, alt: user.status }),
                         user.name
                     );
@@ -270,7 +274,6 @@ var ChatApp = React.createClass({
     _initialize: function _initialize(data) {
         var user = data.user;
         var users = data.users;
-        console.log(user);
         this.setState({ users: users, user: user });
         this.moveUI();
     },
@@ -280,21 +283,18 @@ var ChatApp = React.createClass({
         var messages = this.state.messages;
         messages.push(message);
         this.moveUI();
-        console.log(message);
         this.setState({ messages: messages });
         this.moveUI();
     },
 
     _userJoined: function _userJoined(data) {
-        console.log("JOINED!");
-        console.log(data);
         var users = this.state.users;
         var messages = this.state.messages;
         var name = data.user.name;
         users.push(data.user);
         messages.push({
-            user: { name: 'STATUS' },
-            text: name + ' joined',
+            user: { name: 'CHATTUR' },
+            text: name + ' joined the Chattur-madness.',
             timestamp: this.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
@@ -302,8 +302,6 @@ var ChatApp = React.createClass({
     },
 
     _userLeft: function _userLeft(data) {
-        console.log("LEFT!");
-        console.log(data);
         var users = this.state.users;
         var messages = this.state.messages;
         var name = data.user.name;
@@ -316,8 +314,8 @@ var ChatApp = React.createClass({
         }
         users.splice(index, 1);
         messages.push({
-            user: { name: 'STATUS' },
-            text: name + ' left',
+            user: { name: 'CHATTUR' },
+            text: name + ' has left the building. *drops mic*',
             timestamp: this.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
@@ -330,15 +328,14 @@ var ChatApp = React.createClass({
         var users = this.state.users;
         var messages = this.state.messages;
         for (var i = 0; i < users.length; i++) {
-            console.log("checking username " + users[i]);
             if (users[i].name == oldName) {
                 users[i].name = newName;
                 break;
             }
         }
         messages.push({
-            user: { name: 'STATUS' },
-            text: 'Someone changed their name from ' + oldName + ' to ' + newName,
+            user: { name: 'CHATTUR' },
+            text: oldName + ' wants to be called ' + newName + ' from now on.',
             timestamp: this.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
@@ -346,23 +343,23 @@ var ChatApp = React.createClass({
     },
 
     _userChangedStatus: function _userChangedStatus(data) {
-        console.log("User changed status!");
-        console.log(data);
-        var oldStatus = user.status;
-        var user = data.user;
+        console.log("_userChangedStatus");
+        console.log(data.user);
+        console.log(data.status);
+        var oldStatus = this.state.user.status;
+        var changedUser = data.user;
         var status = data.status;
         var users = this.state.users;
         var messages = this.state.messages;
         for (var i = 0; i < users.length; i++) {
-            console.log("checking username " + users[i]);
-            if (users[i].name == user.name) {
+            if (users[i].name == changedUser.name) {
                 users[i].status = status;
                 break;
             }
         }
         messages.push({
-            user: { name: 'STATUS' },
-            text: 'Someone changed their status from ' + oldStatus + ' to ' + status,
+            user: { name: 'CHATTUR' },
+            text: changedUser.name + " is now " + status,
             timestamp: this.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
@@ -371,7 +368,6 @@ var ChatApp = React.createClass({
 
     handleMessageSubmit: function handleMessageSubmit(message) {
         message.timestamp = this.getTimestamp();
-        console.dir(message);
         var messages = this.state.messages;
         messages.push(message);
         this.setState({ messages: messages });
@@ -380,62 +376,54 @@ var ChatApp = React.createClass({
     },
 
     handleChangeName: function handleChangeName(newName) {
-        var _this = this;
+        var _this2 = this;
 
         var user = this.state.user;
         socket.emit('change:name', { name: newName }, function (result) {
             if (!result) {
-                return alert('There was an error changing your name');
+                return alert('There was an error changing your name, please try again soon!');
             }
-            var users = _this.state.users;
+            var users = _this2.state.users;
             for (var i = 0; i < users.length; i++) {
-                console.log("checking username " + users[i]);
                 if (users[i].name == user.name) {
                     users[i].name = newName;
                     user.name = newName;
                     break;
                 }
             }
-            _this.setState({ users: users, user: user });
-            _this.moveUI();
+            _this2.setState({ users: users, user: user });
+            _this2.moveUI();
         });
-
-        this.moveUI();
     },
 
     handleChangeStatus: function handleChangeStatus(status) {
-        var _this2 = this;
+        var _this3 = this;
 
-        console.log("User changed status!");
-        console.log(status);
         var user = this.state.user;
+
         socket.emit('change:status', { status: status }, function (result) {
-            console.log("User status withing scope");
-            console.log(result);
             if (!result) {
-                return alert('There was an error changing your status');
+                return alert('There was an error changing your status, please try again soon!');
             }
-            var users = _this2.state.users;
+            var users = _this3.state.users;
             for (var i = 0; i < users.length; i++) {
-                console.log("checking username " + users[i]);
                 if (users[i].name == user.name) {
                     users[i].status = status;
                     user.status = status;
                     break;
                 }
             }
-            _this2.setState({ users: users, user: user });
-            _this2.moveUI();
+            _this3.setState({ users: users, user: user });
+            _this3.moveUI();
         });
-
-        this.moveUI();
     },
     moveUI: function moveUI() {
-        console.log("move ui");
+        console.log("MOVEUI");
         $('html, body').animate({
             scrollTop: $('body').height()
         }, 'slow');
     },
+
     getTimestamp: function getTimestamp() {
         var now = new Date();
         var day = ('0' + now.getDate()).slice(-2);
@@ -466,7 +454,8 @@ var ChatApp = React.createClass({
                     "div",
                     { className: "col-sm-3 chattur__userlist" },
                     React.createElement(UserList, {
-                        users: this.state.users
+                        users: this.state.users,
+                        user: this.state.user
                     })
                 )
             ),
@@ -510,5 +499,12 @@ var ChatApp = React.createClass({
 });
 
 React.render(React.createElement(ChatApp, null), document.getElementById('app'));
+
+$(window).resize(function (e) {
+    console.log("resized");
+    $('html, body').animate({
+        scrollTop: $('body').height()
+    }, 'slow');
+});
 
 },{}]},{},[1]);

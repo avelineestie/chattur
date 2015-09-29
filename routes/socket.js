@@ -2,62 +2,125 @@
  * Created by Aveline on 25/09/15.
  */
 var _ = require('underscore');
-var Bot = require('./Bot');
+var Bot = require('../public/js/objects/Bot');
 
 var userList = (function(){
     var users = [];
     var bots = [];
     var messageQueue = [];
+    var statusQueue = [];
     var guestIndex = 0;
     createBots(4);
 
     function createBots(num){
-        var automessages = ["NANANANANANA, BATMAN!","I come from the shadows."];
+
         var statuses = ["active","inactive","playing"];
 
-        var bot1 = new Bot();
-        bot1.setName("Batman");
-        bot1.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
-        bot1.setAutoMessages(automessages);
-        bots.push(bot1);
+        // BATMAN
+        var botBatman = new Bot();
+        var automessages = [
+            'You\'re not the devil. You\'re practice.',
+            'Bats are nocturnal.',
+            'NANANANANANA, BATMAN!' +
+            'Well, today I found out what Batman can\'t do. He can\'t endure this. Today, you get to say "I told you so."'];
+        botBatman.setName("Batman");
+        botBatman.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
+        botBatman.setAutoMessages(automessages);
+        bots.push(botBatman);
         setInterval(
             function(){
-                var message = {
-                    user: bot1.getObject(),
-                    text: bot1.getAutoMessage(),
-                    timestamp: getTimestamp()
+                var status = {
+                    user: botBatman.getObject(),
+                    status: statuses[Math.floor(Math.random()*3)]
                 };
-                messageQueue.push(message);
-                bot1.setTimeout();
-            },bot1.getTimeout()
+
+                statusQueue.push(status);
+
+            },Math.max(parseInt(Math.floor(Math.random() * 25000) + 30000),45000)
         );
 
-        var bot2 = new Bot();
-        bot2.setName("Catwoman");
-        bot2.setStatus("inactive");
-        automessages = ["NANANANANANA, CATWOMAN!","MEEEOWWW!","You can't handle me without gloves on..."];
-        bot2.setAutoMessages(automessages);
-        bots.push(bot2);
+        // BOTCATWOMAN
+        var botCatwoman = new Bot();
+        botCatwoman.setName("Catwoman");
+        botCatwoman.setStatus("inactive");
+        automessages = [
+            'I am Catwoman. Hear me roar.',
+            'MEEEOWWW!',
+            'You poor guys. Always confusing your pistols with your privates.',
+            'Seems like every woman you try to save ends up dead... or deeply resentful. Maybe you should retire.'];
+        botCatwoman.setAutoMessages(automessages);
+        bots.push(botCatwoman);
         setInterval(
             function(){
-                var message = {
-                    user: bot2.getObject(),
-                    text: bot2.getAutoMessage(),
-                    timestamp: getTimestamp()
+                var status = {
+                    user: botCatwoman.getObject(),
+                    status: statuses[Math.floor(Math.random()*3)]
                 };
-                messageQueue.push(message);
-                bot2.setTimeout();
-            },bot2.getTimeout()
+
+                statusQueue.push(status);
+
+            },Math.max(parseInt(Math.floor(Math.random() * 25000) + 30000),45000)
         );
 
-        users.push(bot1.getObject());
-        users.push(bot2.getObject());
+        // BOTIRONMAN
+        var botIronMan = new Bot();
+        botIronMan.setName("Iron Man");
+        botIronMan.setStatus("playing");
+        automessages = [
+            'The truth is... I AM IRON MAN!',
+            'Iron Man. That\'s kind of catchy. It\'s got a nice ring to it. I mean it\'s not technically accurate. The suit\'s a gold titanium alloy, but it\'s kind of provocative, the imagery anyway.',
+            'Day 11, Test 37, Configuration 2.0. For lack of a better option, Dummy is still on fire safety.',
+            'I shouldn\'t be alive... unless it was for a reason. I\'m not crazy, Pepper. I just finally know what I have to do. And I know in my heart that it\'s right.',
+            'Let\'s face it, this is not the worst thing you\'ve caught me doing.'
+        ];
+        botIronMan.setAutoMessages(automessages);
+        bots.push(botIronMan);
+        setInterval(
+            function(){
+                var status = {
+                    user: botIronMan.getObject(),
+                    status: statuses[Math.floor(Math.random()*3)]
+                };
+
+                statusQueue.push(status);
+
+            },Math.max(parseInt(Math.floor(Math.random() * 25000) + 30000),45000)
+        );
+
+        users.push(botBatman.getObject());
+        users.push(botCatwoman.getObject());
+        users.push(botIronMan.getObject());
     }
 
     function getMessageQueue(){
+        for(var i = 0; i < bots.length; i++){
+            var bot = bots[i];
+            var botmsgq = bot.getMessageQueue();
+            for(var j = 0; j < botmsgq.length ; j++){
+                messageQueue.push(botmsgq[j]);
+            }
+            bot.clearMessageQueue();
+
+        }
         var msgq = messageQueue;
         messageQueue = [];
         return msgq;
+    }
+
+    function getStatusQueue(){
+        //for(var i = 0; i < bots.length; i++){
+        //    var bot = bots[i];
+        //    console.log(bot);
+        //    var botmsgq = bot.getStatusQueue();
+        //    for(var j = 0; j < botmsgq.length ; j++){
+        //        statusQueue.push(botmsgq[j]);
+        //    }
+        //    bot.clearStatusQueue();
+        //
+        //}
+        var stq = statusQueue;
+        statusQueue = [];
+        return stq;
     }
 
     function getAll(){
@@ -132,7 +195,7 @@ var userList = (function(){
         var bot = null;
         for(var i = 0; i < bots.length; i++){
             var tempBot = bots[i].getObject();
-            console.log(tempBot);
+            //console.log(tempBot);
             if(tempBot.name.toLowerCase() == data.text.toLowerCase()){
                 bot = bots[i];
             }
@@ -149,7 +212,8 @@ var userList = (function(){
         updateUsername:updateUsername,
         updateStatus:updateStatus,
         checkMessageWithBots:checkMessageWithBots,
-        getMessageQueue: getMessageQueue
+        getMessageQueue: getMessageQueue,
+        getStatusQueue: getStatusQueue
     };
 })();
 
@@ -165,9 +229,24 @@ module.exports = function (socket) {
     setInterval(function(){
         var messages = userList.getMessageQueue();
         for(var i = 0; i < messages.length; i++){
-            console.log(messages[i].user);
+            //console.log(messages[i].user);
             socket.emit('send:message', messages[i]);
             socket.broadcast.emit('send:message', messages[i]);
+        }
+
+        var statusUpdates = userList.getStatusQueue();
+        for(var j = 0; j < statusUpdates.length; j++){
+            //console.log("Status change");
+            //console.log(statusUpdates[i]);
+            socket.emit('change:status', {
+                user:statusUpdates[i].user,
+                status:statusUpdates[i].status
+            });
+
+            socket.broadcast.emit('change:status', {
+                user:statusUpdates[i].user,
+                status:statusUpdates[i].status
+            });
         }
     },1000);
 
@@ -186,7 +265,6 @@ module.exports = function (socket) {
         var bot = userList.checkMessageWithBots(data);
 
         if(bot != null){
-            console.log("Bot is: " + bot.getObject());
             var message = bot.getMessage().replace("%s",user.name);
             socket.emit('send:message', {
                 user: bot.getObject(),
