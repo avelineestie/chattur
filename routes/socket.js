@@ -27,6 +27,7 @@ var userList = (function(){
         botBatman.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
         botBatman.setAutoMessages(automessages);
         bots.push(botBatman);
+        var batmanInterval = 23337;
         setInterval(
             function(){
                 var status = {
@@ -35,8 +36,7 @@ var userList = (function(){
                 };
 
                 statusQueue.push(status);
-
-            },Math.max(parseInt(Math.floor(Math.random() * 25000) + 30000),45000)
+            },36851
         );
 
         // BOTCATWOMAN
@@ -59,7 +59,7 @@ var userList = (function(){
 
                 statusQueue.push(status);
 
-            },Math.max(parseInt(Math.floor(Math.random() * 25000) + 30000),45000)
+            },47727
         );
 
         // BOTIRONMAN
@@ -84,7 +84,7 @@ var userList = (function(){
 
                 statusQueue.push(status);
 
-            },Math.max(parseInt(Math.floor(Math.random() * 25000) + 30000),45000)
+            },35249
         );
 
         users.push(botBatman.getObject());

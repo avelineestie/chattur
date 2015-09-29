@@ -7,12 +7,11 @@ var Bot = (function (options) {
         _messageQueue = [],
         _statusQueue = [],
         _init = function () {
-            console.log("init bot");
             _createRandomTime();
             _setTimeout();
         },
         _createRandomTime = function(){
-            _randomTime = Math.max(parseInt(Math.floor(Math.random() * 25000) + 5000),15000);
+            _randomTime = Math.max(parseInt(Math.floor(Math.random() * 40000) + 5000),20000);
         },
         _setTimeout = function () {
             setInterval(
