@@ -1709,13 +1709,16 @@ var ChangeNameForm = React.createClass({
     },
 
     onKey: function onKey(e) {
+        if (e.target.value.length > 20) {
+            console.error("Should show error now!");
+        }
         this.setState({ newName: e.target.value });
     },
 
     handleSubmit: function handleSubmit(e) {
         e.preventDefault();
         var newName = this.state.newName;
-        if (newName.length > 0) {
+        if (newName.length > 0 && newName.length < 21) {
             this.props.onChangeName(newName);
             this.setState({ newName: '' });
         }
@@ -1735,14 +1738,14 @@ var ChangeNameForm = React.createClass({
                         onChange: this.onKey,
                         value: this.state.newName,
                         className: 'form-control',
-                        placeholder: 'Choose a new name'
-
+                        placeholder: 'Choose a new name',
+                        maxLength: '20'
                     }),
                     React.createElement(
                         'button',
                         { type: 'submit',
                             className: 'btn btn-success col-xs-12',
-                            disabled: this.state.newName.length == 0 },
+                            disabled: this.state.newName.length == 0 || this.state.newName.length > 20 },
                         'Save name'
                     )
                 )

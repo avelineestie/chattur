@@ -123,13 +123,16 @@ var ChangeNameForm = React.createClass({
     },
 
     onKey (e) {
+        if(e.target.value.length > 20){
+            console.error("Should show error now!");
+        }
         this.setState({ newName : e.target.value });
     },
 
     handleSubmit (e) {
         e.preventDefault();
         var newName = this.state.newName;
-        if(newName.length > 0){
+        if(newName.length > 0 && newName.length < 21){
             this.props.onChangeName(newName);
             this.setState({ newName: '' });
         }
@@ -145,11 +148,11 @@ var ChangeNameForm = React.createClass({
                             value={this.state.newName}
                             className="form-control"
                             placeholder="Choose a new name"
-
+                            maxLength="20"
                             />
                         <button type="submit"
                                 className="btn btn-success col-xs-12"
-                                disabled={this.state.newName.length == 0}>Save name</button>
+                                disabled={this.state.newName.length == 0 || this.state.newName.length > 20}>Save name</button>
                     </form>
                 </div>
             </div>
