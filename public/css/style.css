@@ -107,6 +107,39 @@ h1, h2, h3, h4, h5, h6{
 .fixed-bottom{
     border-top: 1px solid rgba(255,213,46,0.3);
 }
+@media (max-width:767px){
+    .row.content{
+        padding-bottom:15px;
+    }
+    .row.fixed-bottom{
+        position:relative;
+    }
+
+    .messages .messages-content{
+        margin-bottom:0;
+    }
+
+    .content .chattur__userlist{
+        position:relative;
+        top:15px;
+        right:0;
+    }
+
+    .row.fixed-bottom{
+        margin-left:0;
+        margin-right:0;
+    }
+
+    .container{
+        padding-right:0 !important;
+    }
+
+    .row.fixed-bottom .chattur__message, .row.fixed-bottom .chattur__settings{
+        padding-left:0;
+        padding-right:0;
+    }
+
+}
 
 @media (min-width: 768px){
     .row.fixed-bottom{
@@ -115,12 +148,17 @@ h1, h2, h3, h4, h5, h6{
 
     .content .chattur__userlist{
         width:262px;
+        right:45px;
     }
 }
 
 @media (min-width: 992px){
     .row.fixed-bottom{
         width:970px;
+    }
+    .content .chattur__userlist{
+        width:262px;
+        right:15px;
     }
 }
 
@@ -142,6 +180,12 @@ input.form-control, textarea.form-control, button.btn, select.form-control{
     border-radius:0;
     border:0;
     outline:none !important;
+}
+
+input.form-control:focus, textarea.form-control:focus, button.btn:focus, select.form-control:focus{
+    outline: none;
+    border:1px solid #ffd72c;
+    box-shadow:none;
 }
 
 button.btn.btn-success{

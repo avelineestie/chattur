@@ -1,9 +1,6 @@
 'use strict';
 var socket = io.connect();
-
-var statuses = [
-    "active","inactive","playing"
-];
+var _ = require('underscore');
 
 var UserList = React.createClass({
     render() {
@@ -89,7 +86,7 @@ var MessageForm = React.createClass({
     render() {
         return(
             <div className='messageform row'>
-                <div className="col-sm-12">
+                <div className="col-xs-12">
                     <form onSubmit={this.handleSubmit} className="form">
                         <textarea
                             onChange={this.changeHandler}
@@ -97,7 +94,7 @@ var MessageForm = React.createClass({
                           className="form-control messageform__text"
                             rows="7"></textarea>
                         <button type="submit"
-                                className="btn btn-success col-sm-12"
+                                className="btn btn-success col-xs-12"
                                 disabled={this.state.text.length == 0}>Send message</button>
                     </form>
                 </div>
@@ -127,7 +124,7 @@ var ChangeNameForm = React.createClass({
     render() {
         return(
             <div className='row change_name_form'>
-                <div className="col-sm-12">
+                <div className="col-xs-12">
                     <form onSubmit={this.handleSubmit} className="form">
                         <input
                             onChange={this.onKey}
@@ -137,7 +134,7 @@ var ChangeNameForm = React.createClass({
 
                             />
                         <button type="submit"
-                                className="btn btn-success col-sm-12"
+                                className="btn btn-success col-xs-12"
                                 disabled={this.state.newName.length == 0}>Save name <span className="small">(ENTER)</span></button>
                     </form>
                 </div>
@@ -145,7 +142,9 @@ var ChangeNameForm = React.createClass({
         );
     }
 });
-
+var statuses = [
+    "active","inactive","playing"
+];
 var ChangeStatusForm = React.createClass({
     getInitialState() {
         return {status: '',
@@ -166,10 +165,9 @@ var ChangeStatusForm = React.createClass({
     },
 
     render() {
-        // something wrong with the props?
         return(
             <div className='row change_status_form'>
-                <div className="col-sm-12">
+                <div className="col-xs-12">
                     <form onSubmit={this.handleSubmit} className="form">
                         <select className="form-control" onChange={this.storeOption} >
                             {
@@ -181,7 +179,7 @@ var ChangeStatusForm = React.createClass({
                             }
                         </select>
                         <button type="submit"
-                                className="btn btn-success col-sm-12"
+                                className="btn btn-success col-xs-12"
                                 disabled={this.state.status == ''}>Update status</button>
                     </form>
                 </div>
@@ -248,14 +246,18 @@ var ChatApp = React.createClass({
         var users = this.state.users;
         var messages = this.state.messages;
         var name = data.user.name;
-        var index;
-        for(var i = 0; i < users.length; i++){
-            if(users[i].name == name){
-                index = i;
-                break;
+        var userLocation;
+
+        _.find(users,function(selectedUser, index){
+            if(selectedUser.name == name){
+                userLocation = index;
+                return true;
             }
-        }
-        users.splice(index, 1);
+
+            return false;
+        });
+
+        users.splice(userLocation, 1);
         messages.push({
             user: {name:'CHATTUR'},
             text : name +' has left the building. *drops mic*',
@@ -270,12 +272,21 @@ var ChatApp = React.createClass({
         var newName = data.newName;
         var users = this.state.users;
         var messages = this.state.messages;
-        for(var i = 0; i < users.length; i++){
-            if(users[i].name == oldName){
-                users[i].name = newName;
-                break;
+
+        _.find(users,function(selectedUser){
+            if(selectedUser.name == oldName){
+                selectedUser.name = newName;
+                return true;
             }
-        }
+
+            return false;
+        });
+        //for(var i = 0; i < users.length; i++){
+        //    if(users[i].name == oldName){
+        //        users[i].name = newName;
+        //        break;
+        //    }
+        //}
         messages.push({
             user: {name:'CHATTUR'},
             text : oldName + ' wants to be called '+ newName + ' from now on.',
@@ -290,12 +301,16 @@ var ChatApp = React.createClass({
         var status = data.status;
         var users = this.state.users;
         var messages = this.state.messages;
-        for(var i = 0; i < users.length; i++){
-            if(users[i].name == changedUser.name){
-                users[i].status = status;
-                break;
+
+        _.find(users,function(user){
+            if(user.name == changedUser.name){
+                user.status = status;
+                return true;
             }
-        }
+
+            return false;
+        });
+
         messages.push({
             user: {name:'CHATTUR'},
             text : changedUser.name + " is now " + status,
@@ -322,13 +337,22 @@ var ChatApp = React.createClass({
                 return alert('There was an error changing your name, please try again soon!');
             }
             var users = this.state.users;
-            for(var i = 0; i < users.length; i++){
-                if(users[i].name == user.name){
-                    users[i].name = newName;
+            _.find(users,function(selectedUser){
+                if(selectedUser.name == user.name){
+                    selectedUser.name = newName;
                     user.name = newName;
-                    break;
+                    return true;
                 }
-            }
+
+                return false;
+            });
+            //for(var i = 0; i < users.length; i++){
+            //    if(users[i].name == user.name){
+            //        users[i].name = newName;
+            //        user.name = newName;
+            //        break;
+            //    }
+            //}
             this.setState({users, user: user});
             this.moveUI();
         });
@@ -342,21 +366,31 @@ var ChatApp = React.createClass({
                 return alert('There was an error changing your status, please try again soon!');
             }
             var users = this.state.users;
-            for(var i = 0; i < users.length; i++){
-                if(users[i].name == user.name){
-                    users[i].status = status;
+            _.find(users, function(selectedUser){
+                if(selectedUser.name == user.name){
+                    selectedUser.status = status;
                     user.status = status;
-                    break;
+                    return true;
                 }
-            }
+
+                return false;
+            });
             this.setState({users, user: user});
             this.moveUI();
         });
     },
     moveUI(){
+        var position = 0;
+        if(window.matchMedia("(max-width:767px)")){
+            position = $('.chattur__messagelist').height();
+        }else{
+            position = $('body').height();
+        }
+
         $('html, body').animate({
-            scrollTop: $('body').height()
+            scrollTop: position
         }, 'slow');
+
     },
 
     getTimestamp(){
@@ -375,12 +409,12 @@ var ChatApp = React.createClass({
         return (
             <div className="container">
                 <div className="row content">
-                    <div className="col-sm-9 chattur__messagelist">
+                    <div className="col-xs-9 chattur__messagelist">
                         <MessageList
                             messages={this.state.messages}
                         />
                     </div>
-                    <div className="col-sm-3 chattur__userlist">
+                    <div className="col-xs-3 chattur__userlist">
                         <UserList
                             users={this.state.users}
                             user={this.state.user}

@@ -135,29 +135,38 @@ var userList = (function(){
     function updateUsername(user, newName){
         // check if new name exists
         if(userNameExists(newName)){
-            _.each(users,function(iUser){
+            _.find(users,function(iUser){
                 if(iUser.name == user.name){
                     iUser.name = newName;
+                    return true;
                 }
+
+                return false;
             });
         }
     }
 
     function updateStatus(user, status){
         // check if new name exists
-        _.each(users,function(iUser){
+        _.find(users,function(iUser){
             if(iUser.name == user.name){
                 iUser.status = status;
+                return true;
             }
+
+            return false;
         });
     }
 
     function checkMessageWithBots(data){
         var bot = null;
-        _.each(bots,function(tempBot){
+        _.find(bots,function(tempBot){
             if(tempBot.getObject().name.toLowerCase() == data.text.toLowerCase()){
                 bot = tempBot;
+                return true;
             }
+
+            return false;
         });
 
         return bot;
@@ -187,27 +196,21 @@ module.exports = function (socket) {
 
     setInterval(function() {
         var messages = userList.getMessageQueue();
-        if(messages.length != 0) {
-            for (var i = 0; i < messages.length; i++) {
-                socket.emit('send:message', messages[i]);
-                socket.broadcast.emit('send:message', messages[i]);
-            }
-        }
+        _.each(messages, function(message){
+            socket.emit('send:message', message);
+            socket.broadcast.emit('send:message', message);
+        });
 
         var statusUpdates = userList.getStatusQueue();
-        if (statusUpdates.length != 0){
-            for (var j = 0; j < statusUpdates.length; j++) {
-                socket.emit('change:status', {
-                    user: statusUpdates[j].user,
-                    status: statusUpdates[j].status
-                });
+        _.each(statusUpdates, function(update){
+            var status = {
+                user: update.user,
+                status: update.status
+            };
+            socket.emit('change:status', status);
 
-                socket.broadcast.emit('change:status', {
-                    user: statusUpdates[j].user,
-                    status: statusUpdates[j].status
-                });
-            }
-        }
+            socket.broadcast.emit('change:status', status);
+        });
     },1000);
 
     // notify other clients that a new user has joined
