@@ -77,6 +77,7 @@ var MessageForm = React.createClass({
 
     handleSubmit(e) {
         e.preventDefault();
+
         var message = {
             user : this.props.user,
             text : this.state.text
@@ -89,6 +90,12 @@ var MessageForm = React.createClass({
         this.setState({ text : e.target.value });
     },
 
+    checkEntry(e) {
+        if(e.keyCode == 13 && !e.shiftKey){
+            this.handleSubmit(e);
+        }
+    },
+
     render() {
         return(
             <div className='messageform row'>
@@ -96,8 +103,9 @@ var MessageForm = React.createClass({
                     <form onSubmit={this.handleSubmit} className="form">
                         <textarea
                             onChange={this.changeHandler}
+                            onKeyDown={this.checkEntry}
                             value={this.state.text}
-                          className="form-control messageform__text"
+                            className="form-control messageform__text"
                             rows="7"></textarea>
                         <button type="submit"
                                 className="btn btn-success col-xs-12"
@@ -110,15 +118,15 @@ var MessageForm = React.createClass({
 });
 
 var ChangeNameForm = React.createClass({
-    getInitialState() {
+    getInitialState () {
         return {newName: this.props.user.name || ''};
     },
 
-    onKey(e) {
+    onKey (e) {
         this.setState({ newName : e.target.value });
     },
 
-    handleSubmit(e) {
+    handleSubmit (e) {
         e.preventDefault();
         var newName = this.state.newName;
         if(newName.length > 0){
@@ -127,7 +135,7 @@ var ChangeNameForm = React.createClass({
         }
     },
 
-    render() {
+    render () {
         return(
             <div className='row change_name_form'>
                 <div className="col-xs-12">
@@ -141,22 +149,17 @@ var ChangeNameForm = React.createClass({
                             />
                         <button type="submit"
                                 className="btn btn-success col-xs-12"
-                                disabled={this.state.newName.length == 0}>Save name <span className="small">(ENTER)</span></button>
+                                disabled={this.state.newName.length == 0}>Save name</button>
                     </form>
                 </div>
             </div>
         );
     }
 });
-var statuses = [
-    "active","inactive","playing"
-];
+
 var ChangeStatusForm = React.createClass({
     getInitialState() {
-        return {status: '',
-        statuses: [
-            "active","inactive","playing"
-        ]};
+        return {status: ''};
     },
 
     storeOption(e) {
@@ -171,6 +174,9 @@ var ChangeStatusForm = React.createClass({
     },
 
     render() {
+        var statuses = [
+            "active","inactive","playing"
+        ];
         return(
             <div className='row change_status_form'>
                 <div className="col-xs-12">
@@ -196,20 +202,21 @@ var ChangeStatusForm = React.createClass({
 
 var ChatApp = React.createClass({
 
-    getInitialState() {
-        return {users: [],
+    getInitialState () {
+        return {
+            users: [],
             user:{
-                name:""
+                name: ''
             },
-            messages:[],
+            messages: [],
             text: '',
             statuses:[
-                "active","inactive","playing"
+                'active','inactive','playing'
             ]
         };
     },
 
-    componentDidMount() {
+    componentDidMount () {
         socket.on('initialize', this._initialize);
         socket.on('send:message', this._receiveMessage);
         socket.on('user:join', this._userJoined);
@@ -218,14 +225,14 @@ var ChatApp = React.createClass({
         socket.on('change:status', this._userChangedStatus);
     },
 
-    _initialize(data) {
+    _initialize (data) {
         var user = data.user;
         var users = data.users;
         this.setState({users, user: user});
         this.moveUI();
     },
 
-    _receiveMessage(message) {
+    _receiveMessage (message) {
         message.timestamp = this.getTimestamp();
         var messages = this.state.messages;
         messages.push(message);
@@ -234,13 +241,13 @@ var ChatApp = React.createClass({
         this.moveUI();
     },
 
-    _userJoined(data) {
+    _userJoined (data) {
         var users = this.state.users;
         var messages = this.state.messages;
         var name = data.user.name;
         users.push(data.user);
         messages.push({
-            user: {name:'CHATTUR'},
+            user: {name: 'CHATTUR'},
             text : name +' joined the Chattur-madness.',
             timestamp: this.getTimestamp()
         });
@@ -254,8 +261,8 @@ var ChatApp = React.createClass({
         var name = data.user.name;
         var userLocation;
 
-        _.find(users,function(selectedUser, index){
-            if(selectedUser.name == name){
+        _.find(users, function(selectedUser, index){
+            if (selectedUser.name == name) {
                 userLocation = index;
                 return true;
             }
@@ -265,7 +272,7 @@ var ChatApp = React.createClass({
 
         users.splice(userLocation, 1);
         messages.push({
-            user: {name:'CHATTUR'},
+            user: {name: 'CHATTUR'},
             text : name +' has left the building. *drops mic*',
             timestamp: this.getTimestamp()
         });
@@ -279,22 +286,16 @@ var ChatApp = React.createClass({
         var users = this.state.users;
         var messages = this.state.messages;
 
-        _.find(users,function(selectedUser){
-            if(selectedUser.name == oldName){
+        _.find(users, function(selectedUser){
+            if (selectedUser.name == oldName) {
                 selectedUser.name = newName;
                 return true;
             }
 
             return false;
         });
-        //for(var i = 0; i < users.length; i++){
-        //    if(users[i].name == oldName){
-        //        users[i].name = newName;
-        //        break;
-        //    }
-        //}
         messages.push({
-            user: {name:'CHATTUR'},
+            user: {name: 'CHATTUR'},
             text : oldName + ' wants to be called '+ newName + ' from now on.',
             timestamp: this.getTimestamp()
         });
@@ -308,8 +309,8 @@ var ChatApp = React.createClass({
         var users = this.state.users;
         var messages = this.state.messages;
 
-        _.find(users,function(user){
-            if(user.name == changedUser.name){
+        _.find(users, function(user){
+            if (user.name == changedUser.name) {
                 user.status = status;
                 return true;
             }
@@ -318,7 +319,7 @@ var ChatApp = React.createClass({
         });
 
         messages.push({
-            user: {name:'CHATTUR'},
+            user: {name: 'CHATTUR'},
             text : changedUser.name + " is now " + status,
             timestamp: this.getTimestamp()
         });
@@ -338,13 +339,13 @@ var ChatApp = React.createClass({
 
     handleChangeName(newName) {
         var user = this.state.user;
-        socket.emit('change:name', { name : newName}, (result) => {
-            if(!result) {
+        socket.emit('change:name', { name: newName}, (result) => {
+            if (!result) {
                 return alert('There was an error changing your name, please try again soon!');
             }
             var users = this.state.users;
-            _.find(users,function(selectedUser){
-                if(selectedUser.name == user.name){
+            _.find(users, function(selectedUser){
+                if (selectedUser.name == user.name) {
                     selectedUser.name = newName;
                     user.name = newName;
                     return true;
@@ -352,13 +353,7 @@ var ChatApp = React.createClass({
 
                 return false;
             });
-            //for(var i = 0; i < users.length; i++){
-            //    if(users[i].name == user.name){
-            //        users[i].name = newName;
-            //        user.name = newName;
-            //        break;
-            //    }
-            //}
+
             this.setState({users, user: user});
             this.moveUI();
         });
@@ -368,12 +363,12 @@ var ChatApp = React.createClass({
         var user = this.state.user;
 
         socket.emit('change:status', { status : status}, (result) => {
-            if(!result) {
+            if (!result) {
                 return alert('There was an error changing your status, please try again soon!');
             }
             var users = this.state.users;
             _.find(users, function(selectedUser){
-                if(selectedUser.name == user.name){
+                if (selectedUser.name == user.name) {
                     selectedUser.status = status;
                     user.status = status;
                     return true;
@@ -387,9 +382,9 @@ var ChatApp = React.createClass({
     },
     moveUI(){
         var position = 0;
-        if(window.matchMedia("(max-width:767px)")){
+        if (window.matchMedia("(max-width:767px)")) {
             position = $('.chattur__messagelist').height();
-        }else{
+        } else {
             position = $('body').height();
         }
 
@@ -453,8 +448,8 @@ var ChatApp = React.createClass({
 
 React.render(<ChatApp/>, document.getElementById('app'));
 
-$(document).ready(function(){
-    $(window).resize(function(e){
+$(document).ready(function () {
+    $(window).resize(function () {
         $('html, body').animate({
             scrollTop: $('body').height()
         }, 'slow');
@@ -464,22 +459,19 @@ $(document).ready(function(){
     });
 });
 
-function setupUserlist(){
-    if(!window.matchMedia("(max-width:767px)").matches){
+function setupUserlist() {
+    var chatturUserlist = $('.chattur__userlist');
+    if (!window.matchMedia("(max-width:767px)").matches) {
         var settingsItem = $('.chattur__settings');
-        var userListWidth = settingsItem.width() + parseFloat(settingsItem.css("marginRight").replace('px',''));
-        console.log(userListWidth);
+        var userListWidth = settingsItem.width() + parseFloat(settingsItem.css("marginRight").replace('px', ''));
+        var userListRight = parseFloat($('.container').css("marginRight").replace('px', '')) + 30;
 
-        var userListRight = parseFloat($('.container').css("marginRight").replace('px','')) + 30;
-        console.log(userListRight);
-
-        $('.chattur__userlist').css("right",userListRight + "px");
-        $('.chattur__userlist').css("width",userListWidth + "px");
-    }else{
-        $('.chattur__userlist').css('width','25%');
-        $('.chattur__userlist').css('right','0');
-        var height = $('.chattur__userlist').height() + 15;
-        $('.row.content').css('min-height',height + "px");
+        chatturUserlist.css("right", userListRight + "px");
+        chatturUserlist.css("width", userListWidth + "px");
+    } else {
+        chatturUserlist.css('width', '25%');
+        chatturUserlist.css('right', '0');
+        $('.row.content').css('min-height', chatturUserlist.height() + 15 + "px");
     }
 
 }

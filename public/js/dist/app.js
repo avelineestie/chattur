@@ -1653,6 +1653,7 @@ var MessageForm = React.createClass({
 
     handleSubmit: function handleSubmit(e) {
         e.preventDefault();
+
         var message = {
             user: this.props.user,
             text: this.state.text
@@ -1663,6 +1664,12 @@ var MessageForm = React.createClass({
 
     changeHandler: function changeHandler(e) {
         this.setState({ text: e.target.value });
+    },
+
+    checkEntry: function checkEntry(e) {
+        if (e.keyCode == 13 && !e.shiftKey) {
+            this.handleSubmit(e);
+        }
     },
 
     render: function render() {
@@ -1677,6 +1684,7 @@ var MessageForm = React.createClass({
                     { onSubmit: this.handleSubmit, className: 'form' },
                     React.createElement('textarea', {
                         onChange: this.changeHandler,
+                        onKeyDown: this.checkEntry,
                         value: this.state.text,
                         className: 'form-control messageform__text',
                         rows: '7' }),
@@ -1735,25 +1743,19 @@ var ChangeNameForm = React.createClass({
                         { type: 'submit',
                             className: 'btn btn-success col-xs-12',
                             disabled: this.state.newName.length == 0 },
-                        'Save name ',
-                        React.createElement(
-                            'span',
-                            { className: 'small' },
-                            '(ENTER)'
-                        )
+                        'Save name'
                     )
                 )
             )
         );
     }
 });
-var statuses = ["active", "inactive", "playing"];
+
 var ChangeStatusForm = React.createClass({
     displayName: 'ChangeStatusForm',
 
     getInitialState: function getInitialState() {
-        return { status: '',
-            statuses: ["active", "inactive", "playing"] };
+        return { status: '' };
     },
 
     storeOption: function storeOption(e) {
@@ -1768,6 +1770,7 @@ var ChangeStatusForm = React.createClass({
     },
 
     render: function render() {
+        var statuses = ["active", "inactive", "playing"];
         return React.createElement(
             'div',
             { className: 'row change_status_form' },
@@ -1805,13 +1808,14 @@ var ChatApp = React.createClass({
     displayName: 'ChatApp',
 
     getInitialState: function getInitialState() {
-        return { users: [],
+        return {
+            users: [],
             user: {
-                name: ""
+                name: ''
             },
             messages: [],
             text: '',
-            statuses: ["active", "inactive", "playing"]
+            statuses: ['active', 'inactive', 'playing']
         };
     },
 
@@ -1893,12 +1897,6 @@ var ChatApp = React.createClass({
 
             return false;
         });
-        //for(var i = 0; i < users.length; i++){
-        //    if(users[i].name == oldName){
-        //        users[i].name = newName;
-        //        break;
-        //    }
-        //}
         messages.push({
             user: { name: 'CHATTUR' },
             text: oldName + ' wants to be called ' + newName + ' from now on.',
@@ -1959,13 +1957,7 @@ var ChatApp = React.createClass({
 
                 return false;
             });
-            //for(var i = 0; i < users.length; i++){
-            //    if(users[i].name == user.name){
-            //        users[i].name = newName;
-            //        user.name = newName;
-            //        break;
-            //    }
-            //}
+
             _this2.setState({ users: users, user: user });
             _this2.moveUI();
         });
@@ -2084,7 +2076,7 @@ var ChatApp = React.createClass({
 React.render(React.createElement(ChatApp, null), document.getElementById('app'));
 
 $(document).ready(function () {
-    $(window).resize(function (e) {
+    $(window).resize(function () {
         $('html, body').animate({
             scrollTop: $('body').height()
         }, 'slow');
@@ -2094,21 +2086,18 @@ $(document).ready(function () {
 });
 
 function setupUserlist() {
+    var chatturUserlist = $('.chattur__userlist');
     if (!window.matchMedia("(max-width:767px)").matches) {
         var settingsItem = $('.chattur__settings');
         var userListWidth = settingsItem.width() + parseFloat(settingsItem.css("marginRight").replace('px', ''));
-        console.log(userListWidth);
-
         var userListRight = parseFloat($('.container').css("marginRight").replace('px', '')) + 30;
-        console.log(userListRight);
 
-        $('.chattur__userlist').css("right", userListRight + "px");
-        $('.chattur__userlist').css("width", userListWidth + "px");
+        chatturUserlist.css("right", userListRight + "px");
+        chatturUserlist.css("width", userListWidth + "px");
     } else {
-        $('.chattur__userlist').css('width', '25%');
-        $('.chattur__userlist').css('right', '0');
-        var height = $('.chattur__userlist').height() + 15;
-        $('.row.content').css('min-height', height + "px");
+        chatturUserlist.css('width', '25%');
+        chatturUserlist.css('right', '0');
+        $('.row.content').css('min-height', chatturUserlist.height() + 15 + "px");
     }
 }
 

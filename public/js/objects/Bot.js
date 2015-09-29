@@ -1,4 +1,4 @@
-var Bot = (function (options) {
+var Bot = (function () {
     var _randomTime = 0,
         _randomStatusTime = 0,
         _name = "",
@@ -45,7 +45,7 @@ var Bot = (function (options) {
                     }while(isSame);
                     var status = {
                         user: _getObject(),
-                        status: _statuses[Math.floor(Math.random() * _statuses.length)],
+                        status: _statuses[Math.floor(Math.random() * _statuses.length)]
                     };
                     _statusQueue.push(status);
                     console.log("Added status for " + status.user.name);

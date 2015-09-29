@@ -10,9 +10,9 @@ var userList = (function(){
     var messageQueue = [];
     var statusQueue = [];
     var guestIndex = 0;
-    createBots(4);
+    createBots();
 
-    function createBots(num){
+    function createBots(){
 
         var statuses = ["active","inactive","playing"];
 
@@ -23,7 +23,7 @@ var userList = (function(){
         var automessages = [
             'You\'re not the devil. You\'re practice.',
             'Bats are nocturnal.',
-            'NANANANANANA, BATMAN!' +
+            'NANANANANANA, BATMAN!',
             'Well, today I found out what Batman can\'t do. He can\'t endure this. Today, you get to say "I told you so."'];
         botBatman.setAutoMessages(automessages);
         bots.push(botBatman);
@@ -120,7 +120,8 @@ var userList = (function(){
     }
 
     function userNameExists(name){
-        var result = _.find(users, function(user){ return user.name == name });
+        var result = _.find(users, function(user){
+            return user.name.trim().toLowerCase() == name.trim().toLowerCase() });
 
         // true if username does not exist, false if it does
         return result == undefined;
@@ -161,7 +162,8 @@ var userList = (function(){
     function checkMessageWithBots(data){
         var bot = null;
         _.find(bots,function(tempBot){
-            if(tempBot.getObject().name.toLowerCase() == data.text.toLowerCase()){
+            var index = data.text.toLowerCase().indexOf(tempBot.getObject().name.toLowerCase());
+            if(index != -1){
                 bot = tempBot;
                 return true;
             }
@@ -265,7 +267,6 @@ module.exports = function (socket) {
     socket.on('change:status', function (data, fn) {
         var status = data.status;
         userList.updateStatus(user, data.status);
-        name = data.name;
 
         socket.broadcast.emit('change:status', {
             user:user,
