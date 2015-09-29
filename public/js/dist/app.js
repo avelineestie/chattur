@@ -343,10 +343,6 @@ var ChatApp = React.createClass({
     },
 
     _userChangedStatus: function _userChangedStatus(data) {
-        console.log("_userChangedStatus");
-        console.log(data.user);
-        console.log(data.status);
-        var oldStatus = this.state.user.status;
         var changedUser = data.user;
         var status = data.status;
         var users = this.state.users;
@@ -418,7 +414,6 @@ var ChatApp = React.createClass({
         });
     },
     moveUI: function moveUI() {
-        console.log("MOVEUI");
         $('html, body').animate({
             scrollTop: $('body').height()
         }, 'slow');
@@ -501,7 +496,6 @@ var ChatApp = React.createClass({
 React.render(React.createElement(ChatApp, null), document.getElementById('app'));
 
 $(window).resize(function (e) {
-    console.log("resized");
     $('html, body').animate({
         scrollTop: $('body').height()
     }, 'slow');

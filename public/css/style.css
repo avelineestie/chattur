@@ -25,10 +25,6 @@ h1, h2, h3, h4, h5, h6{
     font-family: "Bree Serif","Garamond",serif !important;
 }
 
-.message .message__username{
-    font-family: "Bree Serif","Garamond",serif !important;
-    font-size:16px;
-}
 .content .chattur__userlist{
     position:fixed;
     top:15px;
@@ -36,7 +32,7 @@ h1, h2, h3, h4, h5, h6{
 }
 .users ul{
     list-style-type:none;
-    padding-left:0px;
+    padding-left:0;
 }
 
 .users li i{
@@ -74,20 +70,22 @@ h1, h2, h3, h4, h5, h6{
     color:#aaaaaa;
 }
 
+.message .message__username{
+    font-family: "Bree Serif","Garamond",serif !important;
+    font-size:16px;
+}
+
+/* FORMS */
+.messageform .messageform__text{
+    height:129px;
+}
+
 .change_name_form{
     margin-bottom:15px;
 }
 
 .change_status_form select{
     text-transform: capitalize;
-}
-
-.container{
-    position:relative;
-}
-
-.row{
-    background-color: #fff7f2;
 }
 
 .row.content{
@@ -114,6 +112,10 @@ h1, h2, h3, h4, h5, h6{
     .row.fixed-bottom{
         width:750px;
     }
+
+    .content .chattur__userlist{
+        width:262px;
+    }
 }
 
 @media (min-width: 992px){
@@ -128,14 +130,18 @@ h1, h2, h3, h4, h5, h6{
     }
 }
 
+.container{
+    position:relative;
+}
+
+.row{
+    background-color: #fff7f2;
+}
+
 input.form-control, textarea.form-control, button.btn, select.form-control{
     border-radius:0;
     border:0;
     outline:none !important;
-}
-
-.messageform .messageform__text{
-    height:129px;
 }
 
 button.btn.btn-success{

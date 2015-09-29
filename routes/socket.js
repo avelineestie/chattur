@@ -16,33 +16,22 @@ var userList = (function(){
 
         var statuses = ["active","inactive","playing"];
 
-        // BATMAN
+        // BOT BATMAN
         var botBatman = new Bot();
+        botBatman.setName("Batman");
+        botBatman.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
         var automessages = [
             'You\'re not the devil. You\'re practice.',
             'Bats are nocturnal.',
             'NANANANANANA, BATMAN!' +
             'Well, today I found out what Batman can\'t do. He can\'t endure this. Today, you get to say "I told you so."'];
-        botBatman.setName("Batman");
-        botBatman.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
         botBatman.setAutoMessages(automessages);
         bots.push(botBatman);
-        var batmanInterval = 23337;
-        setInterval(
-            function(){
-                var status = {
-                    user: botBatman.getObject(),
-                    status: statuses[Math.floor(Math.random()*3)]
-                };
 
-                statusQueue.push(status);
-            },36851
-        );
-
-        // BOTCATWOMAN
+        // BOT CATWOMAN
         var botCatwoman = new Bot();
         botCatwoman.setName("Catwoman");
-        botCatwoman.setStatus("inactive");
+        botCatwoman.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
         automessages = [
             'I am Catwoman. Hear me roar.',
             'MEEEOWWW!',
@@ -50,22 +39,11 @@ var userList = (function(){
             'Seems like every woman you try to save ends up dead... or deeply resentful. Maybe you should retire.'];
         botCatwoman.setAutoMessages(automessages);
         bots.push(botCatwoman);
-        setInterval(
-            function(){
-                var status = {
-                    user: botCatwoman.getObject(),
-                    status: statuses[Math.floor(Math.random()*3)]
-                };
 
-                statusQueue.push(status);
-
-            },47727
-        );
-
-        // BOTIRONMAN
+        // BOT IRON MAN
         var botIronMan = new Bot();
         botIronMan.setName("Iron Man");
-        botIronMan.setStatus("playing");
+        botIronMan.setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
         automessages = [
             'The truth is... I AM IRON MAN!',
             'Iron Man. That\'s kind of catchy. It\'s got a nice ring to it. I mean it\'s not technically accurate. The suit\'s a gold titanium alloy, but it\'s kind of provocative, the imagery anyway.',
@@ -75,50 +53,41 @@ var userList = (function(){
         ];
         botIronMan.setAutoMessages(automessages);
         bots.push(botIronMan);
-        setInterval(
-            function(){
-                var status = {
-                    user: botIronMan.getObject(),
-                    status: statuses[Math.floor(Math.random()*3)]
-                };
 
-                statusQueue.push(status);
-
-            },35249
-        );
-
+        // Add limited object to users array for display only.
         users.push(botBatman.getObject());
         users.push(botCatwoman.getObject());
         users.push(botIronMan.getObject());
     }
 
     function getMessageQueue(){
-        for(var i = 0; i < bots.length; i++){
-            var bot = bots[i];
+        // Populate the messageQueue variable
+        _.each(bots,function(bot){
             var botmsgq = bot.getMessageQueue();
-            for(var j = 0; j < botmsgq.length ; j++){
-                messageQueue.push(botmsgq[j]);
-            }
+            _.each(botmsgq, function(msg){
+                messageQueue.push(msg);
+            });
             bot.clearMessageQueue();
+        });
 
-        }
         var msgq = messageQueue;
+        // Clear it since it is a queue
         messageQueue = [];
         return msgq;
     }
 
     function getStatusQueue(){
-        //for(var i = 0; i < bots.length; i++){
-        //    var bot = bots[i];
-        //    console.log(bot);
-        //    var botmsgq = bot.getStatusQueue();
-        //    for(var j = 0; j < botmsgq.length ; j++){
-        //        statusQueue.push(botmsgq[j]);
-        //    }
-        //    bot.clearStatusQueue();
-        //
-        //}
+        _.each(bots,function(bot){
+            var botmsgq = bot.getStatusQueue();
+            _.each(botmsgq, function(msg){
+                statusQueue.push(msg);
+            });
+
+            bot.clearStatusQueue();
+        });
+
         var stq = statusQueue;
+        // Clear it since it is a queue
         statusQueue = [];
         return stq;
     }
@@ -130,6 +99,7 @@ var userList = (function(){
     function createUser(){
         var name = "";
         var result = false;
+        guestIndex = 0;
 
         do{
             name = "Guest" + guestIndex;
@@ -152,54 +122,43 @@ var userList = (function(){
     function userNameExists(name){
         var result = _.find(users, function(user){ return user.name == name });
 
-        if(result == undefined){
-            // does not exist
-            return true;
-        }else{
-            // user exists
-            return false;
-        }
+        // true if username does not exist, false if it does
+        return result == undefined;
     }
 
     function removeUser(user){
-        var result = _.reject(users, function(userItem){
+        users = _.reject(users, function(userItem){
             return userItem.name == user.name
         });
-        users = result;
     }
 
     function updateUsername(user, newName){
         // check if new name exists
         if(userNameExists(newName)){
-            for(var i = 0; i < users.length; i++){
-                if(users[i].name == user.name){
-                    users[i].name = newName;
-                    break;
+            _.each(users,function(iUser){
+                if(iUser.name == user.name){
+                    iUser.name = newName;
                 }
-            }
+            });
         }
     }
 
     function updateStatus(user, status){
         // check if new name exists
-        for(var i = 0; i < users.length; i++){
-            if(users[i].name == user.name){
-                users[i].status = status;
-                break;
+        _.each(users,function(iUser){
+            if(iUser.name == user.name){
+                iUser.status = status;
             }
-        }
-
+        });
     }
 
     function checkMessageWithBots(data){
         var bot = null;
-        for(var i = 0; i < bots.length; i++){
-            var tempBot = bots[i].getObject();
-            //console.log(tempBot);
-            if(tempBot.name.toLowerCase() == data.text.toLowerCase()){
-                bot = bots[i];
+        _.each(bots,function(tempBot){
+            if(tempBot.getObject().name.toLowerCase() == data.text.toLowerCase()){
+                bot = tempBot;
             }
-        }
+        });
 
         return bot;
     }
@@ -226,27 +185,28 @@ module.exports = function (socket) {
         users: userList.getAll()
     });
 
-    setInterval(function(){
+    setInterval(function() {
         var messages = userList.getMessageQueue();
-        for(var i = 0; i < messages.length; i++){
-            //console.log(messages[i].user);
-            socket.emit('send:message', messages[i]);
-            socket.broadcast.emit('send:message', messages[i]);
+        if(messages.length != 0) {
+            for (var i = 0; i < messages.length; i++) {
+                socket.emit('send:message', messages[i]);
+                socket.broadcast.emit('send:message', messages[i]);
+            }
         }
 
         var statusUpdates = userList.getStatusQueue();
-        for(var j = 0; j < statusUpdates.length; j++){
-            //console.log("Status change");
-            //console.log(statusUpdates[i]);
-            socket.emit('change:status', {
-                user:statusUpdates[i].user,
-                status:statusUpdates[i].status
-            });
+        if (statusUpdates.length != 0){
+            for (var j = 0; j < statusUpdates.length; j++) {
+                socket.emit('change:status', {
+                    user: statusUpdates[j].user,
+                    status: statusUpdates[j].status
+                });
 
-            socket.broadcast.emit('change:status', {
-                user:statusUpdates[i].user,
-                status:statusUpdates[i].status
-            });
+                socket.broadcast.emit('change:status', {
+                    user: statusUpdates[j].user,
+                    status: statusUpdates[j].status
+                });
+            }
         }
     },1000);
 
