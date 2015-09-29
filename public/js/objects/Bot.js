@@ -1,3 +1,4 @@
+var Utils = require('./Utils')();
 var Bot = (function () {
     var _randomTime = 0,
         _randomStatusTime = 0,
@@ -25,7 +26,7 @@ var Bot = (function () {
                     var message = {
                         user: _getObject(),
                         text: _getAutoMessage(),
-                        timestamp: _getTimestamp()
+                        timestamp: Utils.getTimestamp()
                     };
                     _messageQueue.push(message);
                     console.log('Added message for ' + message.user.name);
@@ -88,17 +89,6 @@ var Bot = (function () {
         },
         _getMessage = function(){
             return _messages[Math.floor(Math.random() * _messages.length)];
-        },
-        _getTimestamp = function(){
-            var now = new Date();
-            var day = ('0' + now.getDate()).slice(-2);
-            var month = ('0' + (now.getMonth() + 1)).slice(-2);
-            var year = now.getFullYear();
-            var hour = ('0' + now.getHours()).slice(-2);
-            var min = ('0' + now.getMinutes()).slice(-2);
-            var sec = ('0' + now.getSeconds()).slice(-2);
-
-            return day + '/' + month + '/' + year + ' ' + hour + ':' + min + ':' + sec;
         },
         _getMessageQueue = function(){
             return _messageQueue;

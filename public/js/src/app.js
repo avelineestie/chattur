@@ -1,6 +1,7 @@
 'use strict';
 var socket = io.connect();
 var _ = require('underscore');
+var Utils = require('../objects/Utils')();
 
 var UserList = React.createClass({
     componentDidMount() {
@@ -236,7 +237,7 @@ var ChatApp = React.createClass({
     },
 
     _receiveMessage (message) {
-        message.timestamp = this.getTimestamp();
+        message.timestamp = Utils.getTimestamp();
         var messages = this.state.messages;
         messages.push(message);
         this.moveUI();
@@ -252,7 +253,7 @@ var ChatApp = React.createClass({
         messages.push({
             user: {name: 'CHATTUR'},
             text : name +' joined the Chattur-madness.',
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({users, messages});
         this.moveUI();
@@ -277,7 +278,7 @@ var ChatApp = React.createClass({
         messages.push({
             user: {name: 'CHATTUR'},
             text : name +' has left the building. *drops mic*',
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({users, messages});
         this.moveUI();
@@ -300,7 +301,7 @@ var ChatApp = React.createClass({
         messages.push({
             user: {name: 'CHATTUR'},
             text : oldName + ' wants to be called '+ newName + ' from now on.',
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({users, messages});
         this.moveUI();
@@ -324,14 +325,14 @@ var ChatApp = React.createClass({
         messages.push({
             user: {name: 'CHATTUR'},
             text : changedUser.name + " is now " + status,
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({users, messages});
         this.moveUI();
     },
 
     handleMessageSubmit(message) {
-        message.timestamp = this.getTimestamp();
+        message.timestamp = Utils.getTimestamp();
         var messages = this.state.messages;
         messages.push(message);
         this.setState({messages});
@@ -395,18 +396,6 @@ var ChatApp = React.createClass({
             scrollTop: position
         }, 'slow');
 
-    },
-
-    getTimestamp(){
-        var now = new Date();
-        var day = ('0' + now.getDate()).slice(-2);
-        var month = ('0' + (now.getMonth() + 1)).slice(-2);
-        var year = now.getFullYear();
-        var hour = ('0' + now.getHours()).slice(-2);
-        var min = ('0' + now.getMinutes()).slice(-2);
-        var sec = ('0' + now.getSeconds()).slice(-2);
-
-        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
     },
 
     render() {

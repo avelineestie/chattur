@@ -4,6 +4,7 @@
 'use strict';
 var _ = require('underscore');
 var UserList = require('../public/js/objects/UserList');
+var Utils = require('../public/js/objects/Utils')();
 
 var userList = new UserList();
 
@@ -45,7 +46,7 @@ module.exports = function (socket) {
         socket.broadcast.emit('send:message', {
             user: user,
             text: data.text,
-            timestamp: getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         var bot = userList.checkMessageWithBots(data);
 
@@ -54,12 +55,12 @@ module.exports = function (socket) {
             socket.emit('send:message', {
                 user: bot.getObject(),
                 text: message,
-                timestamp: getTimestamp()
+                timestamp: Utils.getTimestamp()
             });
             socket.broadcast.emit('send:message', {
                 user: bot.getObject(),
                 text: message,
-                timestamp: getTimestamp()
+                timestamp: Utils.getTimestamp()
             });
         }
     });
@@ -103,18 +104,6 @@ module.exports = function (socket) {
         });
         userList.removeUser(user);
     });
-
-
 };
 
-function getTimestamp(){
-    var now = new Date();
-    var day = ('0' + now.getDate()).slice(-2);
-    var month = ('0' + (now.getMonth() + 1)).slice(-2);
-    var year = now.getFullYear();
-    var hour = ('0' + now.getHours()).slice(-2);
-    var min = ('0' + now.getMinutes()).slice(-2);
-    var sec = ('0' + now.getSeconds()).slice(-2);
 
-    return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
-}
