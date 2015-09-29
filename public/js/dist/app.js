@@ -1556,6 +1556,11 @@ var _ = require('underscore');
 var UserList = React.createClass({
     displayName: 'UserList',
 
+    componentDidMount: function componentDidMount() {
+        setTimeout(function () {
+            setupUserlist();
+        }, 250);
+    },
     render: function render() {
         var _this = this;
 
@@ -2078,10 +2083,33 @@ var ChatApp = React.createClass({
 
 React.render(React.createElement(ChatApp, null), document.getElementById('app'));
 
-$(window).resize(function (e) {
-    $('html, body').animate({
-        scrollTop: $('body').height()
-    }, 'slow');
+$(document).ready(function () {
+    $(window).resize(function (e) {
+        $('html, body').animate({
+            scrollTop: $('body').height()
+        }, 'slow');
+
+        setupUserlist();
+    });
 });
+
+function setupUserlist() {
+    if (!window.matchMedia("(max-width:767px)").matches) {
+        var settingsItem = $('.chattur__settings');
+        var userListWidth = settingsItem.width() + parseFloat(settingsItem.css("marginRight").replace('px', ''));
+        console.log(userListWidth);
+
+        var userListRight = parseFloat($('.container').css("marginRight").replace('px', '')) + 30;
+        console.log(userListRight);
+
+        $('.chattur__userlist').css("right", userListRight + "px");
+        $('.chattur__userlist').css("width", userListWidth + "px");
+    } else {
+        $('.chattur__userlist').css('width', '25%');
+        $('.chattur__userlist').css('right', '0');
+        var height = $('.chattur__userlist').height() + 15;
+        $('.row.content').css('min-height', height + "px");
+    }
+}
 
 },{"underscore":1}]},{},[2]);

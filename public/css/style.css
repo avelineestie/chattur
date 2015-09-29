@@ -107,6 +107,13 @@ h1, h2, h3, h4, h5, h6{
 .fixed-bottom{
     border-top: 1px solid rgba(255,213,46,0.3);
 }
+@media(max-width:900px){
+    .content .chattur__userlist{
+        position:fixed;
+        top:15px;
+        right:0;
+    }
+}
 @media (max-width:767px){
     .row.content{
         padding-bottom:15px;
@@ -119,11 +126,7 @@ h1, h2, h3, h4, h5, h6{
         margin-bottom:0;
     }
 
-    .content .chattur__userlist{
-        position:relative;
-        top:15px;
-        right:0;
-    }
+
 
     .row.fixed-bottom{
         margin-left:0;
@@ -139,16 +142,24 @@ h1, h2, h3, h4, h5, h6{
         padding-right:0;
     }
 
+    .content .chattur__userlist{
+        position:fixed;
+        top:15px;
+        right:0;
+    }
+
+}
+
+@media(min-width:901px){
+    .content .chattur__userlist{
+        width:262px;
+        right:45px;
+    }
 }
 
 @media (min-width: 768px){
     .row.fixed-bottom{
         width:750px;
-    }
-
-    .content .chattur__userlist{
-        width:262px;
-        right:45px;
     }
 }
 
