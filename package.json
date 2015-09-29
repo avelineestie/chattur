@@ -9,6 +9,10 @@
     "socket.io": "^1.3.7",
     "underscore": "^1.8.3"
   },
+  "devDependencies": {
+    "babelify": "^6.1.3",
+    "browserify": "^10.2.6"
+  },
   "scripts":{
     "parseJSX":"browserify ./public/js/src/app.js -t babelify --outfile ./public/js/dist/app.js",
     "run":"npm server.js"
