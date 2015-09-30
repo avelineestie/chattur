@@ -322,7 +322,7 @@ var ChatApp = React.createClass({
         if(oldName == user.name){
             messages.push({
                 user: {name: 'CHATTUR'},
-                text : 'You changed your name to '+ newName,
+                text : 'You changed your name to ' + newName + '.',
                 timestamp: Utils.getTimestamp()
             });
             user.name = newName;
@@ -357,7 +357,7 @@ var ChatApp = React.createClass({
 
         messages.push({
             user: {name: 'CHATTUR'},
-            text : changedUser.name + ' is now ' + status + ' ' + game,
+            text : changedUser.name + ' is now ' + status + ' ' + game + '.',
             timestamp: Utils.getTimestamp()
         });
         this.setState({users, messages});
