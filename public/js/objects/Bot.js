@@ -1,127 +1,121 @@
 var Utils = require('./Utils')();
-var Bot = (function () {
-    var _randomTime = 0,
-        _randomStatusTime = 0,
-        _name = '',
-        _status = '',
-        _messages = ['Did you call my name, %s?','How are you, %s?','Sup %s?','Yo %s!'],
-        _statuses = ['active', 'inactive', 'playing'],
-        _autoMessages = [],
-        _messageQueue = [],
-        _statusQueue = [],
-        _init = function () {
-            _createRandomTime();
-            _createRandomStatusTime();
-            _setTimeout();
-        },
-        _createRandomTime = function(){
-            _randomTime = Math.max(parseInt(Math.floor(Math.random() * 40000) + 5000), 20000);
-        },
-        _createRandomStatusTime = function(){
-            _randomStatusTime = Math.max(parseInt(Math.floor(Math.random() * 60000) + 5000), 20000);
-        },
-        _setTimeout = function () {
-            setInterval(
-                function(){
-                    var message = {
-                        user: _getObject(),
-                        text: _getAutoMessage(),
-                        timestamp: Utils.getTimestamp()
-                    };
-                    _messageQueue.push(message);
-                    console.log('Added message for ' + message.user.name);
-                    _createRandomTime();
-                }, _randomTime
-            );
-            setInterval(
-                function(){
-                    var isSame = true;
-                    var statusText = _getObject().status;
-                    do{
-                        var tempStatus = _statuses[Math.floor(Math.random() * _statuses.length)];
-                        if (tempStatus != statusText) {
-                            isSame = false;
-                            statusText = tempStatus;
-                        }
-                    }while(isSame);
-                    var status = {
-                        user: _getObject(),
-                        status: _statuses[Math.floor(Math.random() * _statuses.length)]
-                    };
-                    _statusQueue.push(status);
-                    console.log('Added status for ' + status.user.name);
-                    _createRandomStatusTime();
-                }, _randomStatusTime
-            );
-        },
-        _getTimeout = function(){
-            return _randomTime;
-        },
-        _setStatus = function(newStatus){
-            _status = newStatus;
-        },
-        _getStatus = function(){
-            return _status;
-        },
-        _setName = function(newName){
-            _name = newName;
-        },
-        _getName = function(){
-            return _name;
-        },
-        _getObject = function(){
-            return {
-                name: _name,
-                status: _status
-            }
-        },
-        _getMessages = function(){
-            return _messages;
-        },
-        _getAutoMessages = function(){
-            return _autoMessages;
-        },
-        _setAutoMessages = function(autoMessages){
-            _autoMessages = autoMessages;
-        },
-        _getAutoMessage = function(){
-            return _autoMessages[Math.floor(Math.random() * _autoMessages.length)];
-        },
-        _getMessage = function(){
-            return _messages[Math.floor(Math.random() * _messages.length)];
-        },
-        _getMessageQueue = function(){
-            return _messageQueue;
-        },
-        _clearMessageQueue = function(){
-            _messageQueue = [];
-        },
-        _getStatusQueue = function(){
-            return _statusQueue;
-        },
-        _clearStatusQueue = function(){
-            _statusQueue = [];
-        };
+var User = require('./User');
+var Bot = function () {
+    var me = this;
+    this.autoMessages = [];
+    this.randomTime = 0;
+    this.randomStatusTime = 0;
+    this.messages = ['Did you call my name, %s?','How are you, %s?','Sup %s?','Yo %s!'];
+    this.statuses = ['active', 'inactive', 'playing'];
 
-    _init();
+    this.messageQueue = [];
+    this.statusQueue = [];
 
-    return {
-        getTimeout:_getTimeout,
-        setTimeout:_setTimeout,
-        getStatus:_getStatus,
-        setStatus:_setStatus,
-        getName:_getName,
-        setName:_setName,
-        getObject:_getObject,
-        getMessages:_getMessages,
-        getMessage:_getMessage,
-        getAutoMessage:_getAutoMessage,
-        setAutoMessages:_setAutoMessages,
-        getAutoMessages:_getAutoMessages,
-        clearMessageQueue:_clearMessageQueue,
-        getMessageQueue:_getMessageQueue,
-        clearStatusQueue: _clearStatusQueue,
-        getStatusQueue: _getStatusQueue
+    function init(){
+        setRandomStatus();
+        createRandomTime();
+        createRandomStatusTime();
+        setTimeout();
     }
-});
+
+    function setRandomStatus() {
+        me.setStatus(me.statuses[Math.floor(Math.random() * me.statuses.length)]);
+    }
+
+    function setTimeout(){
+        // Send messages randomly
+        setInterval(
+            function(){
+                var message = {
+                    user: me.getObject(),
+                    text: me.getAutoMessage(),
+                    timestamp: Utils.getTimestamp()
+                };
+                me.messageQueue.push(message);
+                console.log('Added message for ' + message.user.name);
+                createRandomTime();
+            }, me.randomTime
+        );
+
+        // Change statuses randomly
+        setInterval(
+            function(){
+                var isSame = true;
+                var statusText = me.getObject().status;
+
+                do{
+                    var tempStatus = me.statuses[Math.floor(Math.random() * me.statuses.length)];
+                    if (tempStatus != statusText) {
+                        isSame = false;
+                        statusText = tempStatus;
+                    }
+                }while(isSame);
+
+                var status = {
+                    user: me.getObject(),
+                    status: me.statuses[Math.floor(Math.random() * me.statuses.length)]
+                };
+                me.statusQueue.push(status);
+                console.log('Added status for ' + status.user.name);
+                createRandomStatusTime();
+            }, me.randomStatusTime
+        );
+    }
+
+    function createRandomTime(){
+        me.randomTime = Math.max(parseInt(Math.floor(Math.random() * 40000) + 5000), 20000);
+    }
+
+    function createRandomStatusTime(){
+        me.randomStatusTime = Math.max(parseInt(Math.floor(Math.random() * 60000) + 5000), 20000);
+    }
+
+    init();
+};
+
+Bot.prototype = new User();
+Bot.prototype.setAutoMessages = function(messages){
+    this.autoMessages = messages;
+};
+
+Bot.prototype.getTimeout = function(){
+    return this.randomTime;
+};
+
+Bot.prototype.getMessages = function(){
+    return this.messages;
+};
+
+Bot.prototype.getMessage = function(){
+    return this.messages[Math.floor(Math.random() * this.messages.length)];
+};
+
+Bot.prototype.getAutoMessages = function(){
+    return this.autoMessages;
+};
+
+Bot.prototype.setAutoMessages = function(autoMessages){
+    this.autoMessages = autoMessages;
+};
+
+Bot.prototype.getAutoMessage = function(){
+    return this.autoMessages[Math.floor(Math.random() * this.autoMessages.length)];
+};
+
+Bot.prototype.getMessageQueue = function(){
+    return this.messageQueue;
+};
+
+Bot.prototype.clearMessageQueue = function(){
+    this.messageQueue = [];
+};
+
+Bot.prototype.getStatusQueue = function(){
+    return this.statusQueue;
+};
+
+Bot.prototype.clearStatusQueue = function(){
+    this.statusQueue = [];
+};
+
 module.exports = Bot;

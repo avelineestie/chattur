@@ -8,7 +8,7 @@ var Utils = require('../public/js/objects/Utils')();
 
 var userList = new UserList();
 
-module.exports = function (socket) {
+var Socket = function (socket) {
     var user = userList.createUser();
 
     // send the new user their name and a list of users
@@ -67,7 +67,7 @@ module.exports = function (socket) {
 
     // validate a user's name change, and broadcast it on success
     socket.on('change:name', function (data, fn) {
-        if (userList.claimName(data.name)) {
+        if (userList.userNameExists(data.name)) {
             var oldName = user.name;
             userList.updateUsername(user, data.name);
             //userNames.free(oldName);
@@ -106,4 +106,4 @@ module.exports = function (socket) {
     });
 };
 
-
+module.exports = Socket;

@@ -464,7 +464,7 @@ function setupUserlist() {
     } else {
         chatturUserlist.css('width', '25%');
         chatturUserlist.css('right', '0');
-        $('.row.content').css('min-height', chatturUserlist.height() + 15 + "px");
+        $('.row.content').css('min-height', chatturUserlist.height() + 45 + "px");
     }
 
 }
