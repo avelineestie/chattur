@@ -23,8 +23,6 @@ var Socket = function (socket) {
 
         var statusUpdates = userList.getStatusQueue();
         _.each(statusUpdates, function (update) {
-            console.log("UPDATE");
-            console.log(update);
             var status = {
                 user: update.user,
                 status: update.status,
