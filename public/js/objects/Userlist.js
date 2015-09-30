@@ -30,7 +30,7 @@ var UserList = function(){
                 ]
             },
             {
-                name: "Catwoman",
+                name: "Iron Man",
                 messages: [
                     'The truth is... I AM IRON MAN!',
                     'Iron Man. That\'s kind of catchy. It\'s got a nice ring to it. I mean it\'s not technically accurate. The suit\'s a gold titanium alloy, but it\'s kind of provocative, the imagery anyway.',

@@ -1621,9 +1621,11 @@ var Message = React.createClass({
     displayName: 'Message',
 
     render: function render() {
+        var messageClass = "message";
+        messageClass += this.props.user.name == "CHATTUR" ? " message__system" : "";
         return React.createElement(
             'div',
-            { className: 'message' },
+            { className: messageClass },
             React.createElement(
                 'span',
                 { className: 'message__timestamp' },
@@ -1916,6 +1918,7 @@ var ChatApp = React.createClass({
         var newName = data.newName;
         var users = this.state.users;
         var messages = this.state.messages;
+        var user = this.state.user;
 
         _.find(users, function (selectedUser) {
             if (selectedUser.name == oldName) {
@@ -1925,12 +1928,23 @@ var ChatApp = React.createClass({
 
             return false;
         });
-        messages.push({
-            user: { name: 'CHATTUR' },
-            text: oldName + ' wants to be called ' + newName + ' from now on.',
-            timestamp: Utils.getTimestamp()
-        });
-        this.setState({ users: users, messages: messages });
+        console.log(oldName + " comparing to " + user.name);
+        if (oldName == user.name) {
+            messages.push({
+                user: { name: 'CHATTUR' },
+                text: 'You changed your name to ' + newName,
+                timestamp: Utils.getTimestamp()
+            });
+            user.name = newName;
+        } else {
+            messages.push({
+                user: { name: 'CHATTUR' },
+                text: oldName + ' wants to be called ' + newName + ' from now on.',
+                timestamp: Utils.getTimestamp()
+            });
+        }
+
+        this.setState({ users: users, messages: messages, user: user });
         this.moveUI();
     },
 
@@ -2113,7 +2127,7 @@ function setupUserlist() {
     } else {
         chatturUserlist.css('width', '25%');
         chatturUserlist.css('right', '0');
-        $('.row.content').css('min-height', chatturUserlist.height() + 15 + "px");
+        $('.row.content').css('min-height', chatturUserlist.height() + 45 + "px");
     }
 }
 

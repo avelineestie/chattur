@@ -72,11 +72,19 @@ var Socket = function (socket) {
             userList.updateUsername(user, data.name);
             //userNames.free(oldName);
             var newName = data.name;
+            user.name = newName;
+
+            socket.emit('change:name', {
+                oldName: oldName,
+                newName: newName
+            });
 
             socket.broadcast.emit('change:name', {
                 oldName: oldName,
                 newName: newName
             });
+
+
 
             fn(true);
         } else {

@@ -38,8 +38,10 @@ var UserList = React.createClass({
 
 var Message = React.createClass({
     render() {
+        var messageClass = "message";
+        messageClass += this.props.user.name == "CHATTUR" ? " message__system":"";
         return (
-            <div className="message">
+            <div className={messageClass}>
                 <span className="message__timestamp">[{this.props.timestamp}] </span>
                 <span className="message__username">{this.props.user.name}: </span>
                 <span className="message__text">{this.props.text}</span>
@@ -290,6 +292,7 @@ var ChatApp = React.createClass({
         var newName = data.newName;
         var users = this.state.users;
         var messages = this.state.messages;
+        var user = this.state.user;
 
         _.find(users, function(selectedUser){
             if (selectedUser.name == oldName) {
@@ -299,12 +302,23 @@ var ChatApp = React.createClass({
 
             return false;
         });
-        messages.push({
-            user: {name: 'CHATTUR'},
-            text : oldName + ' wants to be called '+ newName + ' from now on.',
-            timestamp: Utils.getTimestamp()
-        });
-        this.setState({users, messages});
+        console.log(oldName + " comparing to " + user.name);
+        if(oldName == user.name){
+            messages.push({
+                user: {name: 'CHATTUR'},
+                text : 'You changed your name to '+ newName,
+                timestamp: Utils.getTimestamp()
+            });
+            user.name = newName;
+        }else{
+            messages.push({
+                user: {name: 'CHATTUR'},
+                text : oldName + ' wants to be called '+ newName + ' from now on.',
+                timestamp: Utils.getTimestamp()
+            });
+        }
+
+        this.setState({users, messages, user: user});
         this.moveUI();
     },
 
