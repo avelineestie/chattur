@@ -21,3 +21,5 @@ or use `nodemon`
 And navigate to `localhost:1337` and chat!
 
 ## Make sure to update the React file whenever you make changes to `public/src/app.js` !
+
+The repository can be found here: [https://github.com/zynne/chattur](https://github.com/zynne/chattur)
