@@ -26,13 +26,13 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .content .chattur__userlist{
-    position:fixed;
-    top:15px;
-    right:45px;
+    position: fixed;
+    top: 15px;
+    right: 45px;
 }
 .users ul{
-    list-style-type:none;
-    padding-left:0;
+    list-style-type: none;
+    padding-left: 0;
 }
 
 .user{
@@ -40,10 +40,10 @@ h1, h2, h3, h4, h5, h6{
 }
 .user img{
     height: 40px;
-    width:40px;
-    border-radius:50%;
-    float:left;
-    margin-right:5px;
+    width: 40px;
+    border-radius: 50%;
+    float: left;
+    margin-right: 5px;
 }
 
 .user .status-active{
@@ -59,15 +59,15 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .user .user__status{
-    font-size:12px;
+    font-size: 12px;
 }
 
 .users li{
-    margin-bottom:5px;
+    margin-bottom: 5px;
 }
 
 .user.current{
-    font-weight:700;
+    font-weight: 700;
 }
 
 .user:hover{
@@ -75,68 +75,68 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .messages{
-    margin-top:35px;
+    margin-top: 35px;
 
 }
 .messages .messages-content{
-    overflow:auto;
-    margin-bottom:240px;
+    overflow: auto;
+    margin-bottom: 240px;
 }
 
 .message{
     line-height: 24px;
 }
 
-.message.message__system .message__text{
-    font-style:italic;
+.message__system .message__text{
+    font-style: italic;
 }
 
 .message .message__timestamp{
-    color:#aaaaaa;
+    color: #aaaaaa;
 }
 
 .message .message__username{
     font-family: "Bree Serif","Garamond",serif !important;
-    font-size:16px;
+    font-size: 16px;
 }
 
 /* FORMS */
 .messageform .messageform__text{
-    height:139px;
+    height: 139px;
 }
 
 .change_name_form{
-    margin-bottom:15px;
+    margin-bottom: 15px;
 }
 
 .change_status_form select{
     text-transform: capitalize;
-    margin-right:2%;
+    margin-right: 2%;
 }
 
 .change_status_form select + input{
-    margin-top:10px;
+    margin-top: 10px;
 }
 
 .change_status_form select, .change_status_form input{
-    width:49%;
-    display:inline;
+    width: 49%;
+    display: inline;
 }
 
 .row.content{
-    min-height:100%;
-    padding-bottom:50px;
+    min-height: 100%;
+    padding-bottom: 50px;
 }
 
 .row.fixed-bottom{
-    position:fixed;
-    bottom:0;
-    padding-bottom:15px;
-    width:calc(100% - 15px);
+    position: fixed;
+    bottom: 0;
+    padding-bottom: 15px;
+    width: calc(100% - 15px);
 }
 
 .chattur__settings{
-    border-left:1px solid rgba(255,213,46,0.3);
+    border-left: 1px solid rgba(255,213,46,0.3);
 }
 
 .fixed-bottom{
@@ -144,9 +144,9 @@ h1, h2, h3, h4, h5, h6{
 }
 @media(max-width:900px){
     .content .chattur__userlist{
-        position:fixed;
-        top:15px;
-        right:0;
+        position: fixed;
+        top: 15px;
+        right: 0;
     }
 }
 @media (max-width:767px){
