@@ -24,7 +24,8 @@ var UserList = React.createClass({
                             return (
                                 <li key={i} className={userClass}>
                                     <img src="img/avatar_default.png" className={statusClass} width="50" alt={alt}/>
-                                    {user.name}
+                                    <span>{user.name}</span><br/>
+                                    <span className="user__status">{user.status} {user.game}</span>
                                 </li>
                             );
                         })
@@ -166,24 +167,34 @@ var ChangeNameForm = React.createClass({
 
 var ChangeStatusForm = React.createClass({
     getInitialState() {
-        return {status: ''};
+        return {status: '', game: ''};
     },
 
     storeOption(e) {
         this.setState({ status : e.target.value });
     },
 
+    storeGame(e) {
+        this.setState({
+            game : e.target.value
+        });
+    },
+
     handleSubmit(e) {
         e.preventDefault();
         var status = this.state.status;
-        this.props.onChangeStatus(status);
-        this.setState({ status: '' });
+        var game = this.state.game;
+        console.log("status: " + this.state.status + "; game: " + this.state.game );
+        this.props.onChangeStatus(status, game);
+        this.setState({ status: '', game: '' });
     },
 
     render() {
         var statuses = [
             "active","inactive","playing"
         ];
+
+        var enableInput = this.state.status != "playing";
         return(
             <div className='row change_status_form'>
                 <div className="col-xs-12">
@@ -197,6 +208,12 @@ var ChangeStatusForm = React.createClass({
                                 })
                             }
                         </select>
+                        <input type="text"
+                               disabled={enableInput}
+                               onChange={this.storeGame}
+                               value={this.state.game}
+                               className="form-control"
+                               maxLength="15"/>
                         <button type="submit"
                                 className="btn btn-success col-xs-12"
                                 disabled={this.state.status == ''}>Update status</button>
@@ -213,7 +230,8 @@ var ChatApp = React.createClass({
         return {
             users: [],
             user:{
-                name: ''
+                name: '',
+                game: ''
             },
             messages: [],
             text: '',
@@ -325,12 +343,14 @@ var ChatApp = React.createClass({
     _userChangedStatus(data) {
         var changedUser = data.user;
         var status = data.status;
+        var game = data.game;
         var users = this.state.users;
         var messages = this.state.messages;
 
         _.find(users, function(user){
             if (user.name == changedUser.name) {
                 user.status = status;
+                user.game = game;
                 return true;
             }
 
@@ -339,7 +359,7 @@ var ChatApp = React.createClass({
 
         messages.push({
             user: {name: 'CHATTUR'},
-            text : changedUser.name + " is now " + status,
+            text : changedUser.name + " is now " + status + " " + game,
             timestamp: Utils.getTimestamp()
         });
         this.setState({users, messages});
@@ -378,18 +398,20 @@ var ChatApp = React.createClass({
         });
     },
 
-    handleChangeStatus(status) {
+    handleChangeStatus(status, game) {
         var user = this.state.user;
 
-        socket.emit('change:status', { status : status}, (result) => {
+        socket.emit('change:status', { status : status, game: game}, (result) => {
             if (!result) {
                 return alert('There was an error changing your status, please try again soon!');
             }
             var users = this.state.users;
             _.find(users, function(selectedUser){
                 if (selectedUser.name == user.name) {
+                    selectedUser.game = game;
                     selectedUser.status = status;
                     user.status = status;
+                    user.game = game;
                     return true;
                 }
 

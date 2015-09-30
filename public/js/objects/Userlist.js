@@ -123,6 +123,7 @@ UserList.prototype.getStatusQueue = function(){
     });
 
     var stq = me.statusQueue;
+    //console.log(stq);
     // Clear it since it is a queue
     me.statusQueue = [];
     return stq;
@@ -147,12 +148,13 @@ UserList.prototype.updateUsername = function(user, newName) {
     }
 };
 
-UserList.prototype.updateStatus = function(user, status) {
+UserList.prototype.updateStatus = function(user, status, game) {
     var me = this;
     // check if new name exists
     _.find(me.users, function(iUser) {
         if(iUser.name == user.name) {
             iUser.status = status;
+            iUser.game = game;
             return true;
         }
 

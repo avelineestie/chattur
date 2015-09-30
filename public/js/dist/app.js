@@ -1609,7 +1609,19 @@ var UserList = React.createClass({
                         'li',
                         { key: i, className: userClass },
                         React.createElement('img', { src: 'img/avatar_default.png', className: statusClass, width: '50', alt: alt }),
-                        user.name
+                        React.createElement(
+                            'span',
+                            null,
+                            user.name
+                        ),
+                        React.createElement('br', null),
+                        React.createElement(
+                            'span',
+                            { className: 'user__status' },
+                            user.status,
+                            ' ',
+                            user.game
+                        )
                     );
                 })
             )
@@ -1785,22 +1797,32 @@ var ChangeStatusForm = React.createClass({
     displayName: 'ChangeStatusForm',
 
     getInitialState: function getInitialState() {
-        return { status: '' };
+        return { status: '', game: '' };
     },
 
     storeOption: function storeOption(e) {
         this.setState({ status: e.target.value });
     },
 
+    storeGame: function storeGame(e) {
+        this.setState({
+            game: e.target.value
+        });
+    },
+
     handleSubmit: function handleSubmit(e) {
         e.preventDefault();
         var status = this.state.status;
-        this.props.onChangeStatus(status);
-        this.setState({ status: '' });
+        var game = this.state.game;
+        console.log("status: " + this.state.status + "; game: " + this.state.game);
+        this.props.onChangeStatus(status, game);
+        this.setState({ status: '', game: '' });
     },
 
     render: function render() {
         var statuses = ["active", "inactive", "playing"];
+
+        var enableInput = this.state.status != "playing";
         return React.createElement(
             'div',
             { className: 'row change_status_form' },
@@ -1821,6 +1843,12 @@ var ChangeStatusForm = React.createClass({
                             );
                         })
                     ),
+                    React.createElement('input', { type: 'text',
+                        disabled: enableInput,
+                        onChange: this.storeGame,
+                        value: this.state.game,
+                        className: 'form-control',
+                        maxLength: '15' }),
                     React.createElement(
                         'button',
                         { type: 'submit',
@@ -1841,7 +1869,8 @@ var ChatApp = React.createClass({
         return {
             users: [],
             user: {
-                name: ''
+                name: '',
+                game: ''
             },
             messages: [],
             text: '',
@@ -1951,12 +1980,14 @@ var ChatApp = React.createClass({
     _userChangedStatus: function _userChangedStatus(data) {
         var changedUser = data.user;
         var status = data.status;
+        var game = data.game;
         var users = this.state.users;
         var messages = this.state.messages;
 
         _.find(users, function (user) {
             if (user.name == changedUser.name) {
                 user.status = status;
+                user.game = game;
                 return true;
             }
 
@@ -1965,7 +1996,7 @@ var ChatApp = React.createClass({
 
         messages.push({
             user: { name: 'CHATTUR' },
-            text: changedUser.name + " is now " + status,
+            text: changedUser.name + " is now " + status + " " + game,
             timestamp: Utils.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
@@ -2005,20 +2036,22 @@ var ChatApp = React.createClass({
         });
     },
 
-    handleChangeStatus: function handleChangeStatus(status) {
+    handleChangeStatus: function handleChangeStatus(status, game) {
         var _this3 = this;
 
         var user = this.state.user;
 
-        socket.emit('change:status', { status: status }, function (result) {
+        socket.emit('change:status', { status: status, game: game }, function (result) {
             if (!result) {
                 return alert('There was an error changing your status, please try again soon!');
             }
             var users = _this3.state.users;
             _.find(users, function (selectedUser) {
                 if (selectedUser.name == user.name) {
+                    selectedUser.game = game;
                     selectedUser.status = status;
                     user.status = status;
+                    user.game = game;
                     return true;
                 }
 

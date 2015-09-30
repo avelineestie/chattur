@@ -7,6 +7,7 @@ var Bot = function () {
     this.randomStatusTime = 0;
     this.messages = ['Did you call my name, %s?','How are you, %s?','Sup %s?','Yo %s!'];
     this.statuses = ['active', 'inactive', 'playing'];
+    this.games = ['Halo','League of Legends','some game'];
 
     this.messageQueue = [];
     this.statusQueue = [];
@@ -20,6 +21,13 @@ var Bot = function () {
 
     function setRandomStatus() {
         me.setStatus(me.statuses[Math.floor(Math.random() * me.statuses.length)]);
+        if(me.getStatus() == "playing"){
+            me.setGame(me.games[Math.floor(Math.random() * me.games.length)]);
+        }else{
+            me.setGame('');
+        }
+
+        console.log("bot is playing:"+me.getStatus()+ " : " +me.getGame());
     }
 
     function setTimeout(){
@@ -41,21 +49,32 @@ var Bot = function () {
         setInterval(
             function(){
                 var isSame = true;
-                var statusText = me.getObject().status;
+                var statusText = me.getStatus();
 
                 do{
                     var tempStatus = me.statuses[Math.floor(Math.random() * me.statuses.length)];
                     if (tempStatus != statusText) {
                         isSame = false;
+                        me.setStatus(tempStatus);
                         statusText = tempStatus;
                     }
                 }while(isSame);
 
+                if(me.getStatus() == 'playing'){
+                    console.log("bot is playing, please set game");
+                    me.setGame(me.games[Math.floor(Math.random() * me.games.length)]);
+                }else{console.log("bot is not playing, please unset game");
+                    me.setGame('');
+                }
+
+
                 var status = {
                     user: me.getObject(),
-                    status: me.statuses[Math.floor(Math.random() * me.statuses.length)]
+                    status: me.getStatus(),
+                    game: me.getGame()
                 };
                 me.statusQueue.push(status);
+                console.log(status.game);
                 console.log('Added status for ' + status.user.name);
                 createRandomStatusTime();
             }, me.randomStatusTime

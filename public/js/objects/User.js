@@ -2,6 +2,7 @@ var User = function(){
     this.name = "";
     this.status = "active";
     this.img = "img/avatar_default.png";
+    this.game = '';
 };
 
 User.prototype.getName = function(){
@@ -32,8 +33,17 @@ User.prototype.getObject = function(){
     return{
         name: this.name,
         status: this.status,
-        image: this.image
+        image: this.image,
+        game: this.game
     }
 };
+
+User.prototype.getGame = function(){
+    return this.game;
+};
+
+User.prototype.setGame = function(game){
+    this.game = game;
+}
 
 module.exports = User;

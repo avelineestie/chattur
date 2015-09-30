@@ -35,19 +35,15 @@ h1, h2, h3, h4, h5, h6{
     padding-left:0;
 }
 
-/*.user i, .user img{*/
-.user img{
-    margin-right:15px;
+.user{
+    transition: all 0.3s;
 }
-
-/*.user i{*/
-    /*font-size:20px;*/
-/*}*/
-
 .user img{
-    height: 30px;
-    width:30px;
+    height: 40px;
+    width:40px;
     border-radius:50%;
+    float:left;
+    margin-right:5px;
 }
 
 .user .status-active{
@@ -62,31 +58,29 @@ h1, h2, h3, h4, h5, h6{
     border: 3px solid #2baaff;
 }
 
+.user .user__status{
+    font-size:12px;
+}
+
 .users li{
     margin-bottom:5px;
 }
 
 .user.current{
     font-weight:700;
-    /*color:#2baaff;*/
 }
 
-/*.user .status-active{*/
-    /*color: #ffd72c;*/
-/*}*/
-/*.user .status-inactive{*/
-    /*color: #b0b0b0;*/
-/*}*/
-/*.user .status-playing{*/
-    /*color: #2baaff;*/
-/*}*/
+.user:hover{
+    background-color: rgba(255,213,46,0.1)
+}
+
 .messages{
     margin-top:35px;
 
 }
 .messages .messages-content{
     overflow:auto;
-    margin-bottom:197px;
+    margin-bottom:240px;
 }
 
 .message{
@@ -108,7 +102,7 @@ h1, h2, h3, h4, h5, h6{
 
 /* FORMS */
 .messageform .messageform__text{
-    height:129px;
+    height:173px;
 }
 
 .change_name_form{
@@ -117,6 +111,10 @@ h1, h2, h3, h4, h5, h6{
 
 .change_status_form select{
     text-transform: capitalize;
+}
+
+.change_status_form select + input{
+    margin-top:10px;
 }
 
 .row.content{

@@ -26,9 +26,12 @@ var Socket = function (socket) {
 
         var statusUpdates = userList.getStatusQueue();
         _.each(statusUpdates, function(update){
+            console.log("UPDATE");
+            console.log(update);
             var status = {
                 user: update.user,
-                status: update.status
+                status: update.status,
+                game: update.game
             };
             socket.emit('change:status', status);
 
@@ -84,8 +87,6 @@ var Socket = function (socket) {
                 newName: newName
             });
 
-
-
             fn(true);
         } else {
             fn(false);
@@ -95,11 +96,13 @@ var Socket = function (socket) {
     // validate a user's status change, and broadcast it on success
     socket.on('change:status', function (data, fn) {
         var status = data.status;
-        userList.updateStatus(user, data.status);
+        var game = data.game;
+        userList.updateStatus(user, data.status, data.game);
 
         socket.broadcast.emit('change:status', {
             user:user,
-            status:status
+            status:status,
+            game: game
         });
 
         fn(true);
