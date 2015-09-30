@@ -1550,8 +1550,32 @@
 
 },{}],2:[function(require,module,exports){
 'use strict';
+
+var Utils = function Utils() {
+    function getTimestamp() {
+        var now = new Date();
+        var day = ('0' + now.getDate()).slice(-2);
+        var month = ('0' + (now.getMonth() + 1)).slice(-2);
+        var year = now.getFullYear();
+        var hour = ('0' + now.getHours()).slice(-2);
+        var min = ('0' + now.getMinutes()).slice(-2);
+        var sec = ('0' + now.getSeconds()).slice(-2);
+
+        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+    }
+
+    return {
+        getTimestamp: getTimestamp
+    };
+};
+
+module.exports = Utils;
+
+},{}],3:[function(require,module,exports){
+'use strict';
 var socket = io.connect();
 var _ = require('underscore');
+var Utils = require('../objects/Utils')();
 
 var UserList = React.createClass({
     displayName: 'UserList',
@@ -1577,13 +1601,14 @@ var UserList = React.createClass({
                 'ul',
                 null,
                 this.props.users.map(function (user, i) {
-                    var statusClass = "fa fa-gamepad status-" + user.status;
+                    var statusClass = "status-" + user.status;
                     var userClass = "user";
+                    var alt = user.name + " is " + user.status;
                     userClass += _this.props.user.name == user.name ? " current" : "";
                     return React.createElement(
                         'li',
                         { key: i, className: userClass },
-                        React.createElement('i', { className: statusClass, alt: user.status }),
+                        React.createElement('img', { src: 'img/avatar_default.png', className: statusClass, width: '50', alt: alt }),
                         user.name
                     );
                 })
@@ -1769,7 +1794,7 @@ var ChangeStatusForm = React.createClass({
         e.preventDefault();
         var status = this.state.status;
         this.props.onChangeStatus(status);
-        this.setState({ status: status });
+        this.setState({ status: '' });
     },
 
     render: function render() {
@@ -1839,7 +1864,7 @@ var ChatApp = React.createClass({
     },
 
     _receiveMessage: function _receiveMessage(message) {
-        message.timestamp = this.getTimestamp();
+        message.timestamp = Utils.getTimestamp();
         var messages = this.state.messages;
         messages.push(message);
         this.moveUI();
@@ -1855,7 +1880,7 @@ var ChatApp = React.createClass({
         messages.push({
             user: { name: 'CHATTUR' },
             text: name + ' joined the Chattur-madness.',
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
         this.moveUI();
@@ -1880,7 +1905,7 @@ var ChatApp = React.createClass({
         messages.push({
             user: { name: 'CHATTUR' },
             text: name + ' has left the building. *drops mic*',
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
         this.moveUI();
@@ -1903,7 +1928,7 @@ var ChatApp = React.createClass({
         messages.push({
             user: { name: 'CHATTUR' },
             text: oldName + ' wants to be called ' + newName + ' from now on.',
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
         this.moveUI();
@@ -1927,14 +1952,14 @@ var ChatApp = React.createClass({
         messages.push({
             user: { name: 'CHATTUR' },
             text: changedUser.name + " is now " + status,
-            timestamp: this.getTimestamp()
+            timestamp: Utils.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
         this.moveUI();
     },
 
     handleMessageSubmit: function handleMessageSubmit(message) {
-        message.timestamp = this.getTimestamp();
+        message.timestamp = Utils.getTimestamp();
         var messages = this.state.messages;
         messages.push(message);
         this.setState({ messages: messages });
@@ -2000,18 +2025,6 @@ var ChatApp = React.createClass({
         $('html, body').animate({
             scrollTop: position
         }, 'slow');
-    },
-
-    getTimestamp: function getTimestamp() {
-        var now = new Date();
-        var day = ('0' + now.getDate()).slice(-2);
-        var month = ('0' + (now.getMonth() + 1)).slice(-2);
-        var year = now.getFullYear();
-        var hour = ('0' + now.getHours()).slice(-2);
-        var min = ('0' + now.getMinutes()).slice(-2);
-        var sec = ('0' + now.getSeconds()).slice(-2);
-
-        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
     },
 
     render: function render() {
@@ -2104,4 +2117,4 @@ function setupUserlist() {
     }
 }
 
-},{"underscore":1}]},{},[2]);
+},{"../objects/Utils":2,"underscore":1}]},{},[3]);

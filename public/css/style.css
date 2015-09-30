@@ -35,8 +35,35 @@ h1, h2, h3, h4, h5, h6{
     padding-left:0;
 }
 
-.users li i{
+/*.user i, .user img{*/
+.user img{
     margin-right:15px;
+}
+
+/*.user i{*/
+    /*font-size:20px;*/
+/*}*/
+
+.user img{
+    height: 30px;
+    width:30px;
+    border-radius:50%;
+}
+
+.user .status-active{
+    border: 3px solid #ffd72c;
+}
+
+.user .status-inactive{
+    border: 3px solid #b0b0b0;
+}
+
+.user .status-playing{
+    border: 3px solid #2baaff;
+}
+
+.users li{
+    margin-bottom:5px;
 }
 
 .user.current{
@@ -44,15 +71,15 @@ h1, h2, h3, h4, h5, h6{
     /*color:#2baaff;*/
 }
 
-.user .status-active{
-    color: #ffd72c;
-}
-.user .status-inactive{
-    color: #b0b0b0;
-}
-.user .status-playing{
-    color: #2baaff;
-}
+/*.user .status-active{*/
+    /*color: #ffd72c;*/
+/*}*/
+/*.user .status-inactive{*/
+    /*color: #b0b0b0;*/
+/*}*/
+/*.user .status-playing{*/
+    /*color: #2baaff;*/
+/*}*/
 .messages{
     margin-top:35px;
 

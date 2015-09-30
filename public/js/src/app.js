@@ -17,12 +17,13 @@ var UserList = React.createClass({
                 <ul>
                     {
                         this.props.users.map((user, i) => {
-                            var statusClass = "fa fa-gamepad status-" + user.status;
+                            var statusClass = "status-" + user.status;
                             var userClass = "user";
+                            var alt = user.name + " is " + user.status;
                             userClass += this.props.user.name == user.name ? " current": "";
                             return (
                                 <li key={i} className={userClass}>
-                                    <i className={statusClass} alt={user.status}></i>
+                                    <img src="img/avatar_default.png" className={statusClass} width="50" alt={alt}/>
                                     {user.name}
                                 </li>
                             );
@@ -174,7 +175,7 @@ var ChangeStatusForm = React.createClass({
         e.preventDefault();
         var status = this.state.status;
         this.props.onChangeStatus(status);
-        this.setState({ status: status });
+        this.setState({ status: '' });
     },
 
     render() {
