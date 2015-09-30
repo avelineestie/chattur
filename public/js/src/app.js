@@ -20,10 +20,11 @@ var UserList = React.createClass({
                             var statusClass = 'status-' + user.status;
                             var userClass = 'user';
                             var alt = user.name + ' is ' + user.status;
+                            console.log(user);
                             userClass += this.props.user.name == user.name ? ' current': '';
                             return (
                                 <li key={i} className={userClass}>
-                                    <img src='img/avatar_default.png' className={statusClass} width='50' alt={alt}/>
+                                    <img src={user.image} className={statusClass} width='50' alt={alt}/>
                                     <span>{user.name}</span><br/>
                                     <span className='user__status'>{user.status} {user.game}</span>
                                 </li>

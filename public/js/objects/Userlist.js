@@ -18,7 +18,8 @@ var UserList = function(){
                     'Bats are nocturnal.',
                     'NANANANANANA, BATMAN!',
                     'Well, today I found out what Batman can\'t do. He can\'t endure this. Today, you get to say "I told you so."'
-                ]
+                ],
+                image: 'img/batman.png'
             },
             {
                 name: 'Catwoman',
@@ -27,7 +28,8 @@ var UserList = function(){
                     'MEEEOWWW!',
                     'You poor guys. Always confusing your pistols with your privates.',
                     'Seems like every woman you try to save ends up dead... or deeply resentful. Maybe you should retire.'
-                ]
+                ],
+                image: 'img/catwoman.png'
             },
             {
                 name: 'Iron Man',
@@ -37,7 +39,8 @@ var UserList = function(){
                     'Day 11, Test 37, Configuration 2.0. For lack of a better option, Dummy is still on fire safety.',
                     'I shouldn\'t be alive... unless it was for a reason. I\'m not crazy, Pepper. I just finally know what I have to do. And I know in my heart that it\'s right.',
                     'Let\'s face it, this is not the worst thing you\'ve caught me doing.'
-                ]
+                ],
+                image: 'img/iron_man.png'
             }
         ];
 
@@ -45,6 +48,7 @@ var UserList = function(){
             var bot = new Bot();
             bot.setName(customBot.name);
             bot.setAutoMessages(customBot.messages);
+            bot.setImage(customBot.image);
             me.bots.push(bot);
             me.users.push(bot.getObject());
         });

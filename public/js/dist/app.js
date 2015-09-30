@@ -1561,7 +1561,7 @@ var Utils = function Utils() {
         var min = ('0' + now.getMinutes()).slice(-2);
         var sec = ('0' + now.getSeconds()).slice(-2);
 
-        return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+        return day + '/' + month + '/' + year + ' ' + hour + ':' + min + ':' + sec;
     }
 
     return {
@@ -1604,11 +1604,12 @@ var UserList = React.createClass({
                     var statusClass = 'status-' + user.status;
                     var userClass = 'user';
                     var alt = user.name + ' is ' + user.status;
+                    console.log(user);
                     userClass += _this.props.user.name == user.name ? ' current' : '';
                     return React.createElement(
                         'li',
                         { key: i, className: userClass },
-                        React.createElement('img', { src: 'img/avatar_default.png', className: statusClass, width: '50', alt: alt }),
+                        React.createElement('img', { src: user.image, className: statusClass, width: '50', alt: alt }),
                         React.createElement(
                             'span',
                             null,

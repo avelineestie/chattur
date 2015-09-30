@@ -1,7 +1,7 @@
 var User = function(){
     this.name = '';
     this.status = 'active';
-    this.img = 'img/avatar_default.png';
+    this.image = 'img/avatar_default.png';
     this.game = '';
 };
 
@@ -22,11 +22,11 @@ User.prototype.setStatus = function(status){
 };
 
 User.prototype.getImage = function(){
-    return this.img;
+    return this.image;
 };
 
 User.prototype.setImage = function(img){
-    this.img = img;
+    this.image = img;
 };
 
 User.prototype.getObject = function(){
