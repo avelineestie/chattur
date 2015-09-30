@@ -12,7 +12,7 @@ var UserList = function(){
     function init() {
         var botSettings = [
             {
-                name: "Batman",
+                name: 'Batman',
                 messages: [
                     'You\'re not the devil. You\'re practice.',
                     'Bats are nocturnal.',
@@ -21,7 +21,7 @@ var UserList = function(){
                 ]
             },
             {
-                name: "Catwoman",
+                name: 'Catwoman',
                 messages: [
                     'I am Catwoman. Hear me roar.',
                     'MEEEOWWW!',
@@ -30,7 +30,7 @@ var UserList = function(){
                 ]
             },
             {
-                name: "Iron Man",
+                name: 'Iron Man',
                 messages: [
                     'The truth is... I AM IRON MAN!',
                     'Iron Man. That\'s kind of catchy. It\'s got a nice ring to it. I mean it\'s not technically accurate. The suit\'s a gold titanium alloy, but it\'s kind of provocative, the imagery anyway.',
@@ -56,12 +56,12 @@ var UserList = function(){
 
 UserList.prototype.createUser = function() {
     var me = this;
-    var name = "";
+    var name = '';
     var result = false;
     me.guestIndex = 0;
 
     do{
-        name = "Guest" + me.guestIndex;
+        name = 'Guest' + me.guestIndex;
         result = this.userNameExists(name);
         if (result == false) {
             me.guestIndex++;

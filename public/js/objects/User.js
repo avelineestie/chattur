@@ -1,7 +1,7 @@
 var User = function(){
-    this.name = "";
-    this.status = "active";
-    this.img = "img/avatar_default.png";
+    this.name = '';
+    this.status = 'active';
+    this.img = 'img/avatar_default.png';
     this.game = '';
 };
 

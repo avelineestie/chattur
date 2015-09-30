@@ -2147,18 +2147,19 @@ $(document).ready(function () {
 });
 
 function setupUserlist() {
+    // Correct positioning of the userlist
     var chatturUserlist = $('.chattur__userlist');
-    if (!window.matchMedia('(max-width:767px)').matches) {
+    if (window.matchMedia('(max-width:767px)').matches) {
+        chatturUserlist.css('width', '25%');
+        chatturUserlist.css('right', '0');
+        $('.row.content').css('min-height', chatturUserlist.height() + 45 + 'px');
+    } else {
         var settingsItem = $('.chattur__settings');
         var userListWidth = settingsItem.width() + parseFloat(settingsItem.css('marginRight').replace('px', ''));
         var userListRight = parseFloat($('.container').css('marginRight').replace('px', '')) + 30;
 
         chatturUserlist.css('right', userListRight + 'px');
         chatturUserlist.css('width', userListWidth + 'px');
-    } else {
-        chatturUserlist.css('width', '25%');
-        chatturUserlist.css('right', '0');
-        $('.row.content').css('min-height', chatturUserlist.height() + 45 + 'px');
     }
 }
 

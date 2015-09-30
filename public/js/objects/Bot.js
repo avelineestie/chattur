@@ -21,7 +21,7 @@ var Bot = function () {
 
     function setRandomStatus() {
         me.setStatus(me.statuses[Math.floor(Math.random() * me.statuses.length)]);
-        if(me.getStatus() == "playing"){
+        if(me.getStatus() == 'playing'){
             me.setGame(me.games[Math.floor(Math.random() * me.games.length)]);
         }else{
             me.setGame('');

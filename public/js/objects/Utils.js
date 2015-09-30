@@ -9,7 +9,7 @@ var Utils = (
             var min = ('0' + now.getMinutes()).slice(-2);
             var sec = ('0' + now.getSeconds()).slice(-2);
 
-            return day + '/' + month + "/" + year + " " + hour + ":" + min + ":" + sec;
+            return day + '/' + month + '/' + year + ' ' + hour + ':' + min + ':' + sec;
         }
 
         return{
