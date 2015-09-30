@@ -1601,10 +1601,10 @@ var UserList = React.createClass({
                 'ul',
                 null,
                 this.props.users.map(function (user, i) {
-                    var statusClass = "status-" + user.status;
-                    var userClass = "user";
-                    var alt = user.name + " is " + user.status;
-                    userClass += _this.props.user.name == user.name ? " current" : "";
+                    var statusClass = 'status-' + user.status;
+                    var userClass = 'user';
+                    var alt = user.name + ' is ' + user.status;
+                    userClass += _this.props.user.name == user.name ? ' current' : '';
                     return React.createElement(
                         'li',
                         { key: i, className: userClass },
@@ -1633,8 +1633,8 @@ var Message = React.createClass({
     displayName: 'Message',
 
     render: function render() {
-        var messageClass = "message";
-        messageClass += this.props.user.name == "CHATTUR" ? " message__system" : "";
+        var messageClass = 'message';
+        messageClass += this.props.user.name == 'CHATTUR' ? ' message__system' : '';
         return React.createElement(
             'div',
             { className: messageClass },
@@ -1749,7 +1749,7 @@ var ChangeNameForm = React.createClass({
 
     onKey: function onKey(e) {
         if (e.target.value.length > 20) {
-            console.error("Should show error now!");
+            console.error('Should show error now!');
         }
         this.setState({ newName: e.target.value });
     },
@@ -1814,15 +1814,14 @@ var ChangeStatusForm = React.createClass({
         e.preventDefault();
         var status = this.state.status;
         var game = this.state.game;
-        console.log("status: " + this.state.status + "; game: " + this.state.game);
         this.props.onChangeStatus(status, game);
         this.setState({ status: '', game: '' });
     },
 
     render: function render() {
-        var statuses = ["active", "inactive", "playing"];
+        var statuses = ['active', 'inactive', 'playing'];
 
-        var enableInput = this.state.status != "playing";
+        var enableInput = this.state.status != 'playing';
         return React.createElement(
             'div',
             { className: 'row change_status_form' },
@@ -1957,7 +1956,6 @@ var ChatApp = React.createClass({
 
             return false;
         });
-        console.log(oldName + " comparing to " + user.name);
         if (oldName == user.name) {
             messages.push({
                 user: { name: 'CHATTUR' },
@@ -1996,7 +1994,7 @@ var ChatApp = React.createClass({
 
         messages.push({
             user: { name: 'CHATTUR' },
-            text: changedUser.name + " is now " + status + " " + game,
+            text: changedUser.name + ' is now ' + status + ' ' + game,
             timestamp: Utils.getTimestamp()
         });
         this.setState({ users: users, messages: messages });
@@ -2063,7 +2061,7 @@ var ChatApp = React.createClass({
     },
     moveUI: function moveUI() {
         var position = 0;
-        if (window.matchMedia("(max-width:767px)")) {
+        if (window.matchMedia('(max-width:767px)')) {
             position = $('.chattur__messagelist').height();
         } else {
             position = $('body').height();
@@ -2150,17 +2148,17 @@ $(document).ready(function () {
 
 function setupUserlist() {
     var chatturUserlist = $('.chattur__userlist');
-    if (!window.matchMedia("(max-width:767px)").matches) {
+    if (!window.matchMedia('(max-width:767px)').matches) {
         var settingsItem = $('.chattur__settings');
-        var userListWidth = settingsItem.width() + parseFloat(settingsItem.css("marginRight").replace('px', ''));
-        var userListRight = parseFloat($('.container').css("marginRight").replace('px', '')) + 30;
+        var userListWidth = settingsItem.width() + parseFloat(settingsItem.css('marginRight').replace('px', ''));
+        var userListRight = parseFloat($('.container').css('marginRight').replace('px', '')) + 30;
 
-        chatturUserlist.css("right", userListRight + "px");
-        chatturUserlist.css("width", userListWidth + "px");
+        chatturUserlist.css('right', userListRight + 'px');
+        chatturUserlist.css('width', userListWidth + 'px');
     } else {
         chatturUserlist.css('width', '25%');
         chatturUserlist.css('right', '0');
-        $('.row.content').css('min-height', chatturUserlist.height() + 45 + "px");
+        $('.row.content').css('min-height', chatturUserlist.height() + 45 + 'px');
     }
 }
 

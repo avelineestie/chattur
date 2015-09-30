@@ -13,19 +13,19 @@ var UserList = React.createClass({
     render() {
         return (
             <div className='users'>
-                <h3><i className="fa fa-user"></i> Fellow chatturs</h3>
+                <h3><i className='fa fa-user'></i> Fellow chatturs</h3>
                 <ul>
                     {
                         this.props.users.map((user, i) => {
-                            var statusClass = "status-" + user.status;
-                            var userClass = "user";
-                            var alt = user.name + " is " + user.status;
-                            userClass += this.props.user.name == user.name ? " current": "";
+                            var statusClass = 'status-' + user.status;
+                            var userClass = 'user';
+                            var alt = user.name + ' is ' + user.status;
+                            userClass += this.props.user.name == user.name ? ' current': '';
                             return (
                                 <li key={i} className={userClass}>
-                                    <img src="img/avatar_default.png" className={statusClass} width="50" alt={alt}/>
+                                    <img src='img/avatar_default.png' className={statusClass} width='50' alt={alt}/>
                                     <span>{user.name}</span><br/>
-                                    <span className="user__status">{user.status} {user.game}</span>
+                                    <span className='user__status'>{user.status} {user.game}</span>
                                 </li>
                             );
                         })
@@ -39,13 +39,13 @@ var UserList = React.createClass({
 
 var Message = React.createClass({
     render() {
-        var messageClass = "message";
-        messageClass += this.props.user.name == "CHATTUR" ? " message__system":"";
+        var messageClass = 'message';
+        messageClass += this.props.user.name == 'CHATTUR' ? ' message__system':'';
         return (
             <div className={messageClass}>
-                <span className="message__timestamp">[{this.props.timestamp}] </span>
-                <span className="message__username">{this.props.user.name}: </span>
-                <span className="message__text">{this.props.text}</span>
+                <span className='message__timestamp'>[{this.props.timestamp}] </span>
+                <span className='message__username'>{this.props.user.name}: </span>
+                <span className='message__text'>{this.props.text}</span>
             </div>
         );
     }
@@ -104,16 +104,16 @@ var MessageForm = React.createClass({
     render() {
         return(
             <div className='messageform row'>
-                <div className="col-xs-12">
-                    <form onSubmit={this.handleSubmit} className="form">
+                <div className='col-xs-12'>
+                    <form onSubmit={this.handleSubmit} className='form'>
                         <textarea
                             onChange={this.changeHandler}
                             onKeyDown={this.checkEntry}
                             value={this.state.text}
-                            className="form-control messageform__text"
-                            rows="7"></textarea>
-                        <button type="submit"
-                                className="btn btn-success col-xs-12"
+                            className='form-control messageform__text'
+                            rows='7'></textarea>
+                        <button type='submit'
+                                className='btn btn-success col-xs-12'
                                 disabled={this.state.text.length == 0}>Send message</button>
                     </form>
                 </div>
@@ -129,7 +129,7 @@ var ChangeNameForm = React.createClass({
 
     onKey(e) {
         if(e.target.value.length > 20){
-            console.error("Should show error now!");
+            console.error('Should show error now!');
         }
         this.setState({ newName : e.target.value });
     },
@@ -146,17 +146,17 @@ var ChangeNameForm = React.createClass({
     render() {
         return(
             <div className='row change_name_form'>
-                <div className="col-xs-12">
-                    <form onSubmit={this.handleSubmit} className="form">
+                <div className='col-xs-12'>
+                    <form onSubmit={this.handleSubmit} className='form'>
                         <input
                             onChange={this.onKey}
                             value={this.state.newName}
-                            className="form-control"
-                            placeholder="Choose a new name"
-                            maxLength="20"
+                            className='form-control'
+                            placeholder='Choose a new name'
+                            maxLength='20'
                             />
-                        <button type="submit"
-                                className="btn btn-success col-xs-12"
+                        <button type='submit'
+                                className='btn btn-success col-xs-12'
                                 disabled={this.state.newName.length == 0 || this.state.newName.length > 20}>Save name</button>
                     </form>
                 </div>
@@ -184,22 +184,21 @@ var ChangeStatusForm = React.createClass({
         e.preventDefault();
         var status = this.state.status;
         var game = this.state.game;
-        console.log("status: " + this.state.status + "; game: " + this.state.game );
         this.props.onChangeStatus(status, game);
         this.setState({ status: '', game: '' });
     },
 
     render() {
         var statuses = [
-            "active","inactive","playing"
+            'active','inactive','playing'
         ];
 
-        var enableInput = this.state.status != "playing";
+        var enableInput = this.state.status != 'playing';
         return(
             <div className='row change_status_form'>
-                <div className="col-xs-12">
-                    <form onSubmit={this.handleSubmit} className="form">
-                        <select className="form-control" onChange={this.storeOption} >
+                <div className='col-xs-12'>
+                    <form onSubmit={this.handleSubmit} className='form'>
+                        <select className='form-control' onChange={this.storeOption} >
                             {
                                 statuses.map((status, i) => {
                                     return (
@@ -208,14 +207,14 @@ var ChangeStatusForm = React.createClass({
                                 })
                             }
                         </select>
-                        <input type="text"
+                        <input type='text'
                                disabled={enableInput}
                                onChange={this.storeGame}
                                value={this.state.game}
-                               className="form-control"
-                               maxLength="15"/>
-                        <button type="submit"
-                                className="btn btn-success col-xs-12"
+                               className='form-control'
+                               maxLength='15'/>
+                        <button type='submit'
+                                className='btn btn-success col-xs-12'
                                 disabled={this.state.status == ''}>Update status</button>
                     </form>
                 </div>
@@ -320,7 +319,6 @@ var ChatApp = React.createClass({
 
             return false;
         });
-        console.log(oldName + " comparing to " + user.name);
         if(oldName == user.name){
             messages.push({
                 user: {name: 'CHATTUR'},
@@ -359,7 +357,7 @@ var ChatApp = React.createClass({
 
         messages.push({
             user: {name: 'CHATTUR'},
-            text : changedUser.name + " is now " + status + " " + game,
+            text : changedUser.name + ' is now ' + status + ' ' + game,
             timestamp: Utils.getTimestamp()
         });
         this.setState({users, messages});
@@ -423,7 +421,7 @@ var ChatApp = React.createClass({
     },
     moveUI(){
         var position = 0;
-        if (window.matchMedia("(max-width:767px)")) {
+        if (window.matchMedia('(max-width:767px)')) {
             position = $('.chattur__messagelist').height();
         } else {
             position = $('body').height();
@@ -437,30 +435,30 @@ var ChatApp = React.createClass({
 
     render() {
         return (
-            <div className="container">
-                <div className="row content">
-                    <div className="col-xs-9 chattur__messagelist">
+            <div className='container'>
+                <div className='row content'>
+                    <div className='col-xs-9 chattur__messagelist'>
                         <MessageList
                             messages={this.state.messages}
                         />
                     </div>
-                    <div className="col-xs-3 chattur__userlist">
+                    <div className='col-xs-3 chattur__userlist'>
                         <UserList
                             users={this.state.users}
                             user={this.state.user}
                         />
                     </div>
                 </div>
-                <div className="row fixed-bottom">
-                    <div className="col-sm-9 chattur__message">
-                        <h3><i className="fa fa-envelope"></i> New message</h3>
+                <div className='row fixed-bottom'>
+                    <div className='col-sm-9 chattur__message'>
+                        <h3><i className='fa fa-envelope'></i> New message</h3>
                     <MessageForm
                         onMessageSubmit={this.handleMessageSubmit}
                         user={this.state.user}
                         />
                     </div>
-                    <div className="col-sm-3 chattur__settings">
-                        <h3><i className="fa fa-cog"></i> Settings</h3>
+                    <div className='col-sm-3 chattur__settings'>
+                        <h3><i className='fa fa-cog'></i> Settings</h3>
                         <ChangeNameForm
                         onChangeName={this.handleChangeName}
                         user={this.state.user}
@@ -490,17 +488,19 @@ $(document).ready(function () {
 
 function setupUserlist() {
     var chatturUserlist = $('.chattur__userlist');
-    if (!window.matchMedia("(max-width:767px)").matches) {
+    if (!window.matchMedia('(max-width:767px)').matches) {
         var settingsItem = $('.chattur__settings');
-        var userListWidth = settingsItem.width() + parseFloat(settingsItem.css("marginRight").replace('px', ''));
-        var userListRight = parseFloat($('.container').css("marginRight").replace('px', '')) + 30;
+        var userListWidth = settingsItem.width() + parseFloat(settingsItem.css('marginRight').replace('px', ''));
+        var userListRight = parseFloat($('.container').css('marginRight').replace('px', '')) + 30;
 
-        chatturUserlist.css("right", userListRight + "px");
-        chatturUserlist.css("width", userListWidth + "px");
+        chatturUserlist.css('right', userListRight + 'px');
+        chatturUserlist.css('width', userListWidth + 'px');
+
+
     } else {
         chatturUserlist.css('width', '25%');
         chatturUserlist.css('right', '0');
-        $('.row.content').css('min-height', chatturUserlist.height() + 45 + "px");
+        $('.row.content').css('min-height', chatturUserlist.height() + 45 + 'px');
     }
 
 }

@@ -80,12 +80,12 @@ UserList.prototype.createUser = function() {
 UserList.prototype.userNameExists = function(name) {
     var me = this;
     var result = _.find(me.users, function(user) {
-        return user.name.trim().toLowerCase() == name.trim().toLowerCase()
+        return user.name.trim().toLowerCase() == name.trim().toLowerCase();
     });
 
     // true if username does not exist, false if it does
     return result == undefined;
-}
+};
 
 UserList.prototype.removeUser = function(user){
     var me = this;
@@ -111,7 +111,7 @@ UserList.prototype.getMessageQueue = function() {
     return msgq;
 };
 
-UserList.prototype.getStatusQueue = function(){
+UserList.prototype.getStatusQueue = function() {
     var me = this;
     _.each(me.bots, function(bot) {
         var botmsgq = bot.getStatusQueue();
@@ -123,7 +123,6 @@ UserList.prototype.getStatusQueue = function(){
     });
 
     var stq = me.statusQueue;
-    //console.log(stq);
     // Clear it since it is a queue
     me.statusQueue = [];
     return stq;

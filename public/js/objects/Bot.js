@@ -26,8 +26,6 @@ var Bot = function () {
         }else{
             me.setGame('');
         }
-
-        console.log("bot is playing:"+me.getStatus()+ " : " +me.getGame());
     }
 
     function setTimeout(){
@@ -40,7 +38,6 @@ var Bot = function () {
                     timestamp: Utils.getTimestamp()
                 };
                 me.messageQueue.push(message);
-                console.log('Added message for ' + message.user.name);
                 createRandomTime();
             }, me.randomTime
         );
@@ -58,12 +55,11 @@ var Bot = function () {
                         me.setStatus(tempStatus);
                         statusText = tempStatus;
                     }
-                }while(isSame);
+                } while (isSame);
 
-                if(me.getStatus() == 'playing'){
-                    console.log("bot is playing, please set game");
+                if (me.getStatus() == 'playing') {
                     me.setGame(me.games[Math.floor(Math.random() * me.games.length)]);
-                }else{console.log("bot is not playing, please unset game");
+                } else {
                     me.setGame('');
                 }
 
@@ -74,8 +70,6 @@ var Bot = function () {
                     game: me.getGame()
                 };
                 me.statusQueue.push(status);
-                console.log(status.game);
-                console.log('Added status for ' + status.user.name);
                 createRandomStatusTime();
             }, me.randomStatusTime
         );

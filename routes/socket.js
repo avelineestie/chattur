@@ -1,7 +1,3 @@
-/**
- * Created by Aveline on 25/09/15.
- */
-'use strict';
 var _ = require('underscore');
 var UserList = require('../public/js/objects/UserList');
 var Utils = require('../public/js/objects/Utils')();
@@ -9,6 +5,7 @@ var Utils = require('../public/js/objects/Utils')();
 var userList = new UserList();
 
 var Socket = function (socket) {
+    'use strict';
     var user = userList.createUser();
 
     // send the new user their name and a list of users
@@ -17,15 +14,15 @@ var Socket = function (socket) {
         users: userList.getAll()
     });
 
-    setInterval(function() {
+    setInterval(function () {
         var messages = userList.getMessageQueue();
-        _.each(messages, function(message){
+        _.each(messages, function (message) {
             socket.emit('send:message', message);
             socket.broadcast.emit('send:message', message);
         });
 
         var statusUpdates = userList.getStatusQueue();
-        _.each(statusUpdates, function(update){
+        _.each(statusUpdates, function (update) {
             console.log("UPDATE");
             console.log(update);
             var status = {
@@ -37,7 +34,7 @@ var Socket = function (socket) {
 
             socket.broadcast.emit('change:status', status);
         });
-    },1000);
+    }, 1000);
 
     // notify other clients that a new user has joined
     socket.broadcast.emit('user:join', {
@@ -53,8 +50,8 @@ var Socket = function (socket) {
         });
         var bot = userList.checkMessageWithBots(data);
 
-        if(bot != null){
-            var message = bot.getMessage().replace("%s",user.name);
+        if (bot !== null) {
+            var message = bot.getMessage().replace("%s", user.name);
             socket.emit('send:message', {
                 user: bot.getObject(),
                 text: message,
@@ -100,8 +97,8 @@ var Socket = function (socket) {
         userList.updateStatus(user, data.status, data.game);
 
         socket.broadcast.emit('change:status', {
-            user:user,
-            status:status,
+            user: user,
+            status: status,
             game: game
         });
 
