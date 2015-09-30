@@ -17,11 +17,10 @@ var UserList = React.createClass({
                 <ul>
                     {
                         this.props.users.map((user, i) => {
-                            var statusClass = 'status-' + user.status;
-                            var userClass = 'user';
                             var alt = user.name + ' is ' + user.status;
-                            console.log(user);
-                            userClass += this.props.user.name == user.name ? ' current': '';
+                            var statusClass = 'user--status__' + user.status;
+                            var userClass = 'user';
+                            userClass += this.props.user.name == user.name ? ' user--current': '';
                             return (
                                 <li key={i} className={userClass}>
                                     <img src={user.image} className={statusClass} width='50' alt={alt}/>
@@ -56,7 +55,7 @@ var MessageList = React.createClass({
     render() {
         return (
             <div className='messages'>
-                <div className='messages-content'>
+                <div className='messages__content'>
                 {
                     this.props.messages.map((message, i) => {
                         return (
@@ -146,7 +145,7 @@ var ChangeNameForm = React.createClass({
 
     render() {
         return(
-            <div className='row change_name_form'>
+            <div className='row nameform'>
                 <div className='col-xs-12'>
                     <form onSubmit={this.handleSubmit} className='form'>
                         <input
@@ -196,7 +195,7 @@ var ChangeStatusForm = React.createClass({
 
         var enableInput = this.state.status != 'playing';
         return(
-            <div className='row change_status_form'>
+            <div className='row statusform'>
                 <div className='col-xs-12'>
                     <form onSubmit={this.handleSubmit} className='form'>
                         <select className='form-control' onChange={this.storeOption} >
@@ -382,7 +381,7 @@ var ChatApp = React.createClass({
                 return alert('There was an error changing your name, please try again soon!');
             }
             var users = this.state.users;
-            _.find(users, function(selectedUser){
+            _.find(users, function(selectedUser) {
                 if (selectedUser.name == user.name) {
                     selectedUser.name = newName;
                     user.name = newName;
@@ -400,7 +399,7 @@ var ChatApp = React.createClass({
     handleChangeStatus(status, game) {
         var user = this.state.user;
 
-        socket.emit('change:status', { status : status, game: game}, (result) => {
+        socket.emit('change:status', { status : status, game: game }, (result) => {
             if (!result) {
                 return alert('There was an error changing your status, please try again soon!');
             }
@@ -422,6 +421,8 @@ var ChatApp = React.createClass({
     },
     moveUI(){
         var position = 0;
+
+        // Select the right element for the right scroll behaviour
         if (window.matchMedia('(max-width:767px)')) {
             position = $('.chattur__messagelist').height();
         } else {
@@ -431,7 +432,6 @@ var ChatApp = React.createClass({
         $('html, body').animate({
             scrollTop: position
         }, 'slow');
-
     },
 
     render() {
@@ -450,7 +450,7 @@ var ChatApp = React.createClass({
                         />
                     </div>
                 </div>
-                <div className='row fixed-bottom'>
+                <div className='row row--fixedbottom'>
                     <div className='col-sm-9 chattur__message'>
                         <h3><i className='fa fa-envelope'></i> New message</h3>
                     <MessageForm
@@ -478,29 +478,35 @@ React.render(<ChatApp/>, document.getElementById('app'));
 
 $(document).ready(function () {
     $(window).resize(function () {
+        // Also scroll to bottom in case of resize
         $('html, body').animate({
             scrollTop: $('body').height()
         }, 'slow');
 
         setupUserlist();
-
     });
 });
 
+// Correct positioning of the userlist
 function setupUserlist() {
-    // Correct positioning of the userlist
     var chatturUserlist = $('.chattur__userlist');
+
+    // if 'mobile' -> width < 768px
+    // else bigger screens
     if (window.matchMedia('(max-width:767px)').matches) {
-        chatturUserlist.css('width', '25%');
-        chatturUserlist.css('right', '0');
-        $('.row.content').css('min-height', chatturUserlist.height() + 45 + 'px');
+        chatturUserlist
+            .css('width', '25%')
+            .css('right', '0');
+        $('.row.content')
+            .css('min-height', chatturUserlist.height() + 45 + 'px');
     } else {
         var settingsItem = $('.chattur__settings');
         var userListWidth = settingsItem.width() + parseFloat(settingsItem.css('marginRight').replace('px', ''));
         var userListRight = parseFloat($('.container').css('marginRight').replace('px', '')) + 30;
 
-        chatturUserlist.css('right', userListRight + 'px');
-        chatturUserlist.css('width', userListWidth + 'px');
+        chatturUserlist
+            .css('width', userListWidth + 'px')
+            .css('right', userListRight + 'px');
     }
 
 }

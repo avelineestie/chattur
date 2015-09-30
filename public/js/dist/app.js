@@ -1601,11 +1601,10 @@ var UserList = React.createClass({
                 'ul',
                 null,
                 this.props.users.map(function (user, i) {
-                    var statusClass = 'status-' + user.status;
-                    var userClass = 'user';
                     var alt = user.name + ' is ' + user.status;
-                    console.log(user);
-                    userClass += _this.props.user.name == user.name ? ' current' : '';
+                    var statusClass = 'user--status__' + user.status;
+                    var userClass = 'user';
+                    userClass += _this.props.user.name == user.name ? ' user--current' : '';
                     return React.createElement(
                         'li',
                         { key: i, className: userClass },
@@ -1670,7 +1669,7 @@ var MessageList = React.createClass({
             { className: 'messages' },
             React.createElement(
                 'div',
-                { className: 'messages-content' },
+                { className: 'messages__content' },
                 this.props.messages.map(function (message, i) {
                     return React.createElement(Message, {
                         key: i,
@@ -1767,7 +1766,7 @@ var ChangeNameForm = React.createClass({
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'row change_name_form' },
+            { className: 'row nameform' },
             React.createElement(
                 'div',
                 { className: 'col-xs-12' },
@@ -1825,7 +1824,7 @@ var ChangeStatusForm = React.createClass({
         var enableInput = this.state.status != 'playing';
         return React.createElement(
             'div',
-            { className: 'row change_status_form' },
+            { className: 'row statusform' },
             React.createElement(
                 'div',
                 { className: 'col-xs-12' },
@@ -2062,6 +2061,8 @@ var ChatApp = React.createClass({
     },
     moveUI: function moveUI() {
         var position = 0;
+
+        // Select the right element for the right scroll behaviour
         if (window.matchMedia('(max-width:767px)')) {
             position = $('.chattur__messagelist').height();
         } else {
@@ -2098,7 +2099,7 @@ var ChatApp = React.createClass({
             ),
             React.createElement(
                 'div',
-                { className: 'row fixed-bottom' },
+                { className: 'row row--fixedbottom' },
                 React.createElement(
                     'div',
                     { className: 'col-sm-9 chattur__message' },
@@ -2139,6 +2140,7 @@ React.render(React.createElement(ChatApp, null), document.getElementById('app'))
 
 $(document).ready(function () {
     $(window).resize(function () {
+        // Also scroll to bottom in case of resize
         $('html, body').animate({
             scrollTop: $('body').height()
         }, 'slow');
@@ -2147,20 +2149,21 @@ $(document).ready(function () {
     });
 });
 
+// Correct positioning of the userlist
 function setupUserlist() {
-    // Correct positioning of the userlist
     var chatturUserlist = $('.chattur__userlist');
+
+    // if 'mobile' -> width < 768px
+    // else bigger screens
     if (window.matchMedia('(max-width:767px)').matches) {
-        chatturUserlist.css('width', '25%');
-        chatturUserlist.css('right', '0');
+        chatturUserlist.css('width', '25%').css('right', '0');
         $('.row.content').css('min-height', chatturUserlist.height() + 45 + 'px');
     } else {
         var settingsItem = $('.chattur__settings');
         var userListWidth = settingsItem.width() + parseFloat(settingsItem.css('marginRight').replace('px', ''));
         var userListRight = parseFloat($('.container').css('marginRight').replace('px', '')) + 30;
 
-        chatturUserlist.css('right', userListRight + 'px');
-        chatturUserlist.css('width', userListWidth + 'px');
+        chatturUserlist.css('width', userListWidth + 'px').css('right', userListRight + 'px');
     }
 }
 

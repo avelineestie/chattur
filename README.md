@@ -16,7 +16,7 @@ Then run the app like so:
 or use `nodemon`
 
     npm install -g nodemon
-    nodemon server.js
+    npm startNodemon
 
 And navigate to `localhost:1337` and chat!
 

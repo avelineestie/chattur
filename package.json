@@ -14,10 +14,8 @@
     "browserify": "^10.2.6"
   },
   "scripts":{
-    "parseJSX":"browserify ./public/js/src/app.js -t babelify --outfile ./public/js/dist/app.js",
-    "run":"npm server.js"
-  },
-  "engines": {
-    "node": "0.12.2"
+    "parseJSX": "browserify ./public/js/src/app.js -t babelify --outfile ./public/js/dist/app.js",
+    "start": "npm server.js",
+    "startNodemon": "nodemon server.js"
   }
 }

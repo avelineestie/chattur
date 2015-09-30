@@ -1,3 +1,4 @@
+/* FONT SETTINGS */
 @font-face{
     font-family: "Bree Serif";
     src: url(../fonts/BreeSerif-Regular.ttf);
@@ -19,10 +20,18 @@ html body{
     color:#333;
     font-family: "Open Sans","Helvetica","Tahoma",sans-serif;
     font-weight:300;
+    min-height:600px;
 }
 
 h1, h2, h3, h4, h5, h6{
     font-family: "Bree Serif","Garamond",serif !important;
+}
+
+/* CONTENT */
+
+.content{
+    min-height: 100%;
+    padding-bottom: 50px;
 }
 
 .content .chattur__userlist{
@@ -35,9 +44,23 @@ h1, h2, h3, h4, h5, h6{
     padding-left: 0;
 }
 
+.users li{
+    margin-bottom: 5px;
+}
+
 .user{
     transition: all 0.3s;
 }
+
+.user.user--current{
+    font-weight: 700;
+}
+
+.user:hover{
+    background-color: rgba(255,213,46,0.1)
+}
+
+/* AVATAR */
 .user img{
     height: 40px;
     width: 40px;
@@ -46,15 +69,15 @@ h1, h2, h3, h4, h5, h6{
     margin-right: 5px;
 }
 
-.user .status-active{
+.user .user--status__active{
     border: 3px solid #ffd72c;
 }
 
-.user .status-inactive{
+.user .user--status__inactive{
     border: 3px solid #b0b0b0;
 }
 
-.user .status-playing{
+.user .user--status__playing{
     border: 3px solid #2baaff;
 }
 
@@ -62,33 +85,17 @@ h1, h2, h3, h4, h5, h6{
     font-size: 12px;
 }
 
-.users li{
-    margin-bottom: 5px;
-}
-
-.user.current{
-    font-weight: 700;
-}
-
-.user:hover{
-    background-color: rgba(255,213,46,0.1)
-}
-
 .messages{
     margin-top: 35px;
 
 }
-.messages .messages-content{
+.messages .messages__content{
     overflow: auto;
-    margin-bottom: 240px;
+    margin-bottom: 210px;
 }
 
 .message{
     line-height: 24px;
-}
-
-.message__system .message__text{
-    font-style: italic;
 }
 
 .message .message__timestamp{
@@ -100,48 +107,47 @@ h1, h2, h3, h4, h5, h6{
     font-size: 16px;
 }
 
-/* FORMS */
-.messageform .messageform__text{
-    height: 139px;
+.message__system .message__text{
+    font-style: italic;
 }
 
-.change_name_form{
-    margin-bottom: 15px;
-}
+/* BOTTOM */
 
-.change_status_form select{
-    text-transform: capitalize;
-    margin-right: 2%;
-}
-
-.change_status_form select + input{
-    margin-top: 10px;
-}
-
-.change_status_form select, .change_status_form input{
-    width: 49%;
-    display: inline;
-}
-
-.row.content{
-    min-height: 100%;
-    padding-bottom: 50px;
-}
-
-.row.fixed-bottom{
+.row.row--fixedbottom{
     position: fixed;
     bottom: 0;
     padding-bottom: 15px;
     width: calc(100% - 15px);
+    border-top: 1px solid rgba(255,213,46,0.3);
+}
+.messageform .messageform__text{
+    height: 139px;
 }
 
 .chattur__settings{
     border-left: 1px solid rgba(255,213,46,0.3);
 }
-
-.fixed-bottom{
-    border-top: 1px solid rgba(255,213,46,0.3);
+.nameform{
+    margin-bottom: 15px;
 }
+
+.statusform select{
+    text-transform: capitalize;
+    margin-right: 2%;
+}
+
+.statusform select + input{
+    margin-top: 10px;
+}
+
+.statusform select, .statusform input{
+    width: 49%;
+    display: inline;
+}
+
+
+
+
 @media(max-width:900px){
     .content .chattur__userlist{
         position: fixed;
@@ -154,7 +160,7 @@ h1, h2, h3, h4, h5, h6{
         padding-bottom: 15px;
     }
 
-    .row.fixed-bottom{
+    .row.row--fixedbottom{
         position: relative;
     }
 
@@ -165,7 +171,7 @@ h1, h2, h3, h4, h5, h6{
     .messages .messages-content{
         margin-bottom: 0;
     }
-    .row.fixed-bottom{
+    .row.row--fixedbottom{
         margin-left: 0;
         margin-right: 0;
     }
@@ -174,7 +180,7 @@ h1, h2, h3, h4, h5, h6{
         padding-right: 0 !important;
     }
 
-    .row.fixed-bottom .chattur__message, .row.fixed-bottom .chattur__settings{
+    .row.row--fixedbottom .chattur__message, .row.row--fixedbottom .chattur__settings{
         padding-left: 0;
         padding-right: 0;
     }
@@ -195,13 +201,13 @@ h1, h2, h3, h4, h5, h6{
 }
 
 @media (min-width: 768px){
-    .row.fixed-bottom{
+    .row.row--fixedbottom{
         width: 750px;
     }
 }
 
 @media (min-width: 992px){
-    .row.fixed-bottom{
+    .row.row--fixedbottom{
         width: 970px;
     }
     .content .chattur__userlist{
@@ -211,7 +217,7 @@ h1, h2, h3, h4, h5, h6{
 }
 
 @media (min-width: 1200px){
-    .row.fixed-bottom{
+    .row.row--fixedbottom{
         width: 1170px;
     }
 }
