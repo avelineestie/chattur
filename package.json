@@ -15,7 +15,7 @@
   },
   "scripts":{
     "parseJSX": "browserify ./public/js/src/app.js -t babelify --outfile ./public/js/dist/app.js",
-    "start": "npm server.js",
+    "start": "node server.js",
     "startNodemon": "nodemon server.js"
   }
 }
